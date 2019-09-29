@@ -1,0 +1,7 @@
+Clone this repository to your project directory:
+git clone https://github.com/ssupremus/libft.git libft
+Input the following command line:
+make -C libft
+Then include libft.h file to yout .c file.
+Example:
+#include "libft/libft.h"
