@@ -6,13 +6,13 @@
 /*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/26 12:02:54 by ysushkov          #+#    #+#             */
-/*   Updated: 2018/03/26 22:06:51 by ysushkov         ###   ########.fr       */
+/*   Updated: 2019/10/13 17:17:58 by ysushkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_largeur(unsigned long n)
+static int	ft_largeur(long n)
 {
 	int len;
 
@@ -31,7 +31,7 @@ char		*ft_itoa(int n)
 {
 	int		i[3];
 	char	*s;
-	unsigned long	num;
+	long	num;
 
 	num = n;
 	i[0] = ft_largeur(num);
