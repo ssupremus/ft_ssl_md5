@@ -1,6 +1,11 @@
 #include "../includes/ft_ssl.h"
 #include <stdio.h>
 
+uint32_t	leftrotate(uint32_t x, uint32_t c)
+{
+	return (((x) << (c)) | ((x) >> (32 - (c))));
+}
+
 int		md5(t_ssl *ssl, int length, char **args)
 {
 	char *line;
@@ -83,6 +88,11 @@ int		md5(t_ssl *ssl, int length, char **args)
 				f = c ^ (b | (~d));
 				g = (7 * i) % 16;
 			}
+			uint32_t tmp = d;
+			d = c;
+			c = b;
+			b = b + leftrotate((a + f + k[i] + w[g]), s[i]);
+			a = tmp;
 			i++;
 		}
 		offset += 64;
