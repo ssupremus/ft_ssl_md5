@@ -46,7 +46,7 @@ void	flags(t_ssl *ssl, int length, char **args)
 void	processing(t_ssl *ssl, int length, char **args)
 {
 	flags(ssl, length, args);
-	if (ft_strcmp(args[1], "md5"))
+	if (ft_strcmp(args[1], "md5") == 0)
 		md5(ssl, length, args);
 }
 

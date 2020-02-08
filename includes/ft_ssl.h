@@ -2,6 +2,7 @@
 # define FT_SSL_H
 
 # include "../libft/libft.h"
+# include <stdint.h>
 
 typedef struct    s_flag
 {
