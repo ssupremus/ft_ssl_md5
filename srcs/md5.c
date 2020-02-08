@@ -95,9 +95,14 @@ int		md5(t_ssl *ssl, int length, char **args)
 			a = tmp;
 			i++;
 		}
+		a0 = a;
+		b0 = b;
+		c0 = c;
+		d0 = d;
 		offset += 64;
 	}
 	free(msg);
+	printf("%u\n", a0);
 	ft_putendl(line);
 	return (0);
 }
