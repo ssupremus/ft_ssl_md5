@@ -16,4 +16,6 @@ typedef struct    s_ssl
   t_flag          flags;
 }                 t_ssl;
 
+int		md5(t_ssl *ssl, int length, char **args);
+
 #endif

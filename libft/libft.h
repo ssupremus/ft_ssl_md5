@@ -92,5 +92,6 @@ void				ft_swapstr(char **a, char **b);
 void				ft_swapuint(unsigned int *a, unsigned int *b);
 void				ft_swapdate(time_t *a, time_t *b);
 int					ft_strcasecmp(const char *a, const char *b);
+int					get_next_line(const int fd, char **line);
 
 #endif
