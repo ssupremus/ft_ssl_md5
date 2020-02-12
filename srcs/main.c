@@ -52,7 +52,7 @@ void	processing(t_ssl *ssl, int length, char **args)
 	char *newline = ft_strjoin(line, "\n");
 	if (ft_strcmp(args[1], "md5") == 0)
 		md5(ssl, ft_strlen(newline), (uint8_t *)newline);
-	ft_putstr(newline);
+	free(newline);
 	free(line);
 }
 

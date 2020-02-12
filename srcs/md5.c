@@ -48,8 +48,17 @@ char		*add0(char *str)
 	}
 	return (str);
 }
+void  md5_swap(t_ssl *ssl, int i)
+{
+	ssl->f = ssl->f + ssl->a + k[i] + ssl->w[ssl->g];
+	ssl->tmp = ssl->d;
+	ssl->d = ssl->c;
+	ssl->c = ssl->b;
+	ssl->b = ssl->b + leftrotate(ssl->f, s[i]);
+	ssl->a = ssl->tmp;
+}
 
-void  md5_compress(t_ssl *ssl, int i)
+void  md5_loop(t_ssl *ssl, int i)
 {
 	if (i < 16)
 	{
@@ -71,29 +80,10 @@ void  md5_compress(t_ssl *ssl, int i)
 		ssl->f = ssl->c ^ (ssl->b | (~ssl->d));
 		ssl->g = (7 * i) % 16;
 	}
-	ssl->tmp = ssl->d;
-	ssl->d = ssl->c;
-	ssl->c = ssl->b;
-	ssl->b = ssl->b + leftrotate((ssl->a + ssl->f + k[i] + ssl->w[ssl->g]), s[i]);
-	ssl->a = ssl->tmp;
+	md5_swap(ssl, i);
 }
 
-void	*fake_bzero(void *s, size_t n)
-{
-	unsigned char	*i;
-	size_t			b;
-
-	b = 0;
-	i = (unsigned char *)s;
-	while (b < n)
-	{
-		i[b] = '\0';
-		b++;
-	}
-	return (s);
-}
-
-int		prepross(unsigned char *line, size_t length, t_ssl *ssl)
+int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 {
 	ssl->a0 = 0x67452301;
 	ssl->b0 = 0xefcdab89;
@@ -102,39 +92,18 @@ int		prepross(unsigned char *line, size_t length, t_ssl *ssl)
 	ssl->len = length + 1;
 	while (ssl->len % 64 != 56)
 		ssl->len++;
-	if (!(ssl->msg = malloc(ssl->len + 64)))
+	if (!(ssl->padded_message = malloc(ssl->len + 64)))
 		return (-1);
-	ft_bzero(ssl->msg, ssl->len + 64);
-	ft_strcpy((char *)ssl->msg, (const char *)line);
-	*(uint32_t*)(ssl->msg + length) = 0x80;
-	*(uint32_t*)(ssl->msg + ssl->len) = (uint32_t)(8 * length);
-	ssl->offset = 0;
+	ft_bzero(ssl->padded_message, ssl->len + 64);
+	ft_strcpy((char *)ssl->padded_message, (const char *)line);
+	*(uint32_t*)(ssl->padded_message + length) = 0x80;
+	*(uint32_t*)(ssl->padded_message + ssl->len) = (uint32_t)(8 * length);
+	ssl->chunk = 0;
 	return (0);
 }
 
-int		md5(t_ssl *ssl, size_t length, uint8_t *line)
+void  print_md5(t_ssl *ssl)
 {
-	int i;
-
-	if (prepross(line, length, ssl) == -1)
-		return (-1);
-	while (ssl->offset < ssl->len)
-	{
-		ssl->w = (uint32_t *)(ssl->msg + ssl->offset);
-		ssl->a = ssl->a0;
-		ssl->b = ssl->b0;
-		ssl->c = ssl->c0;
-		ssl->d = ssl->d0;
-		i = -1;
-		while (++i < 64)
-			md5_compress(ssl, i);
-		ssl->a0 += ssl->a;
-		ssl->b0 += ssl->b;
-		ssl->c0 += ssl->c;
-		ssl->d0 += ssl->d;
-		ssl->offset += 64;
-	}
-	free(ssl->msg);
 	ft_putstr("(stdin)= ");
 	char *t;
 
@@ -154,5 +123,31 @@ int		md5(t_ssl *ssl, size_t length, uint8_t *line)
 	add0(t);
 	ft_putendl(t);
 	free(t);
+}
+
+int		md5(t_ssl *ssl, size_t length, uint8_t *line)
+{
+	int i;
+
+	if (set_variables(line, length, ssl) == -1)
+		return (-1);
+	while (ssl->chunk < ssl->len)
+	{
+		ssl->w = (uint32_t *)(ssl->padded_message + ssl->chunk);
+		ssl->a = ssl->a0;
+		ssl->b = ssl->b0;
+		ssl->c = ssl->c0;
+		ssl->d = ssl->d0;
+		i = 0;
+		while (i < 64)
+			md5_loop(ssl, i++);
+		ssl->a0 += ssl->a;
+		ssl->b0 += ssl->b;
+		ssl->c0 += ssl->c;
+		ssl->d0 += ssl->d;
+		ssl->chunk += 64;
+	}
+	free(ssl->padded_message);
+	print_md5(ssl);
 	return (0);
 }

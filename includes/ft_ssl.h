@@ -29,8 +29,8 @@ typedef struct    s_ssl
   uint32_t        *w;
   uint32_t        tmp;
   size_t          len;
-  int             offset;
-  unsigned char   *msg;
+  int             chunk;
+  unsigned char   *padded_message;
 }                 t_ssl;
 
 int		md5(t_ssl *ssl, size_t length, uint8_t *line);
