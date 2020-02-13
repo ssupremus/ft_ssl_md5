@@ -4,6 +4,10 @@
 # include "../libft/libft.h"
 # include <stdint.h>
 
+# define STDIN 0
+# define STRING 1
+# define FILES 2
+
 typedef struct    s_flag
 {
   int             p;
@@ -18,6 +22,7 @@ typedef struct    s_ssl
   t_flag          flags;
   int             string_index;
   int             file_index;
+  char            *file_name;
   uint32_t        a0;
   uint32_t        b0;
   uint32_t        c0;
@@ -34,8 +39,12 @@ typedef struct    s_ssl
   size_t          len;
   int             chunk;
   unsigned char   *padded_message;
+  int             origin;
 }                 t_ssl;
 
 int		md5(t_ssl *ssl, size_t length, uint8_t *line);
+void  print_md5(t_ssl *ssl);
+void  no_such_file(char *file_name);
+void  read_error(char *file_name);
 
 #endif

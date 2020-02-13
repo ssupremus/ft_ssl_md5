@@ -8,7 +8,7 @@ HEAD	:=	./includes
 
 LIB	:=	./libft/libft.a
 
-SRCS	:=	srcs/main.c srcs/md5.c
+SRCS	:=	srcs/main.c srcs/md5.c srcs/print.c srcs/error.c
 
 OBJS	:=	$(SRCS:.c=.o)
 

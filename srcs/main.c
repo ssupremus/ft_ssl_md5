@@ -59,36 +59,47 @@ void	processing(t_ssl *ssl, int argc, char **args)
 	flags(ssl, argc, args);
 	if (ssl->flags.p || (!ssl->flags.s && !ssl->file_index))
 	{
-		get_next_line(0, &line);
+		ssl->origin = STDIN;
+		get_next_line(STDIN, &line);
 		ssl->line = ft_strjoin(line, "\n");
 		if (ft_strcmp(args[1], "md5") == 0)
 			md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-		free(ssl->line);
-		free(line);
+		ft_strdel(&ssl->line);
+		ft_strdel(&line);
 	}
-	else
+	if (ssl->flags.s && ssl->string_index)
 	{
-		if (ssl->flags.s && ssl->string_index)
+		ssl->origin = STRING;
+		ssl->line = ft_strdup(args[ssl->string_index]);
+		md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+		ft_strdel(&ssl->line);
+	}
+	if (ssl->file_index)
+	{
+		while (ssl->file_index < argc)
 		{
-			ssl->line = ft_strjoin(args[ssl->string_index], "\n");
-			md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-			free(line);
-		}
-		if (ssl->file_index)
-		{
-			fd = open(args[ssl->file_index], O_RDONLY);
+			ssl->file_name = ft_strdup(args[ssl->file_index]);
+			fd = open(ssl->file_name, O_RDONLY);
 			if (fd != -1)
 			{
-					get_next_line(fd, &line);
-					ssl->line = ft_strjoin(line, "\n");
+					ssl->origin = FILES;
+					if (get_next_line(fd, &line) == -1)
+						read_error(ssl->file_name);
+					else
+					{
+							ssl->line = ft_strjoin(line, "\n");
+							md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+							ft_strdel(&ssl->line);
+							ft_strdel(&line);
+					}
 					close(fd);
-					md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-					free(ssl->line);
-					free(line);
 			}
+			else
+				no_such_file(ssl->file_name);
+			ft_strdel(&ssl->file_name);
+			ssl->file_index++;
 		}
 	}
-
 }
 
 void	initialize(t_ssl *ssl)
@@ -99,6 +110,7 @@ void	initialize(t_ssl *ssl)
 	ssl->flags.s = 0;
 	ssl->string_index = 0;
 	ssl->file_index = 0;
+	ssl->file_name = NULL;
 }
 
 int	main(int argc, char **argv)

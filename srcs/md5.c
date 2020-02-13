@@ -25,29 +25,11 @@ static const uint32_t k[] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-uint32_t	reverse_number(uint32_t n)
-{
-	return ((n >> 24) | ((n & 0xff0000) >> 8) |
-		((n & 0xff00) << 8) | (n << 24));
-}
-
 uint32_t	leftrotate(uint32_t x, uint32_t c)
 {
 	return (((x) << (c)) | ((x) >> (32 - (c))));
 }
 
-char		*add0(char *str)
-{
-	int i;
-
-	i = ft_strlen(str);
-	while (i < 8)
-	{
-		ft_putchar('0');
-		i++;
-	}
-	return (str);
-}
 void  md5_swap(t_ssl *ssl, int i)
 {
 	ssl->f = ssl->f + ssl->a + k[i] + ssl->w[ssl->g];
@@ -100,30 +82,6 @@ int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 	*(uint32_t*)(ssl->padded_message + ssl->len) = (uint32_t)(8 * length);
 	ssl->chunk = 0;
 	return (0);
-}
-
-void  print_md5(t_ssl *ssl)
-{
-	char *t;
-
-	if (ssl->flags.p)
-		ft_putstr(ssl->line);
-	t = ft_itoa_base(reverse_number(ssl->a0), 16);
-	add0(t);
-	ft_putstr(t);
-	free(t);
-	t = ft_itoa_base(reverse_number(ssl->b0), 16);
-	add0(t);
-	ft_putstr(t);
-	free(t);
-	t = ft_itoa_base(reverse_number(ssl->c0), 16);
-	add0(t);
-	ft_putstr(t);
-	free(t);
-	t = ft_itoa_base(reverse_number(ssl->d0), 16);
-	add0(t);
-	ft_putendl(t);
-	free(t);
 }
 
 int		md5(t_ssl *ssl, size_t length, uint8_t *line)
