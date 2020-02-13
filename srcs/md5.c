@@ -104,9 +104,10 @@ int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 
 void  print_md5(t_ssl *ssl)
 {
-	ft_putstr("(stdin)= ");
 	char *t;
 
+	if (ssl->flags.p)
+		ft_putstr(ssl->line);
 	t = ft_itoa_base(reverse_number(ssl->a0), 16);
 	add0(t);
 	ft_putstr(t);

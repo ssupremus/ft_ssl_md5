@@ -14,7 +14,10 @@ typedef struct    s_flag
 
 typedef struct    s_ssl
 {
+  char            *line;
   t_flag          flags;
+  int             string_index;
+  int             file_index;
   uint32_t        a0;
   uint32_t        b0;
   uint32_t        c0;
