@@ -14,30 +14,35 @@ static uint32_t k[] = {
  0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-uint32_t	rigthrotat(uint32_t x, uint32_t n)
+static uint32_t rotate(uint32_t x, uint32_t n)
 {
 	return ((((unsigned int)x >> n)) | (x << (32 - n)));
 }
 
-void		sha256_loop(t_ssl *ssl, int j)
+static void	    sha256_loop(t_ssl *ssl, int i)
 {
-	ssl->tmp = rigthrotat(ssl->e, 6) ^ rigthrotat(ssl->e, 11) ^ rigthrotat(ssl->e, 25);
-	ssl->tmp2 = (ssl->e & ssl->f) ^ ((~ssl->e) & ssl->g);
-	ssl->tmp3 = ssl->h + ssl->tmp + ssl->tmp2 + k[j] + ssl->w[j];
-	ssl->tmp4 = rigthrotat(ssl->a, 2) ^ rigthrotat(ssl->a, 13) ^ rigthrotat(ssl->a, 22);
-	ssl->tmp5 = (ssl->a & ssl->b) ^ (ssl->a & ssl->c) ^ (ssl->b & ssl->c);
-	ssl->tmp6 = ssl->tmp4 + ssl->tmp5;
+  uint32_t s1;
+  uint32_t s0;
+  uint32_t ch;
+  uint32_t maj;
+
+	s1 = rotate(ssl->e, 6) ^ rotate(ssl->e, 11) ^ rotate(ssl->e, 25);
+	ch = (ssl->e & ssl->f) ^ ((~ssl->e) & ssl->g);
+	ssl->tmp = ssl->h + s1 + ch + k[i] + ssl->w[i];
+	s0 = rotate(ssl->a, 2) ^ rotate(ssl->a, 13) ^ rotate(ssl->a, 22);
+	maj = (ssl->a & ssl->b) ^ (ssl->a & ssl->c) ^ (ssl->b & ssl->c);
+	ssl->tmp2 = s0 + maj;
 	ssl->h = ssl->g;
 	ssl->g = ssl->f;
 	ssl->f = ssl->e;
-	ssl->e = ssl->d + ssl->tmp3;
+	ssl->e = ssl->d + ssl->tmp;
 	ssl->d = ssl->c;
 	ssl->c = ssl->b;
 	ssl->b = ssl->a;
-	ssl->a = ssl->tmp3 + ssl->tmp6;
+	ssl->a = ssl->tmp + ssl->tmp2;
 }
 
-void       schedule(t_ssl *ssl, int i)
+static void    schedule(t_ssl *ssl, int i)
 {
   int j;
 
@@ -47,11 +52,11 @@ void       schedule(t_ssl *ssl, int i)
 	j = 16;
 	while (j < 64)
 	{
-		ssl->tmp4 = rigthrotat(ssl->w[j - 15], 7) ^
-		rigthrotat(ssl->w[j - 15], 18) ^ (ssl->w[j - 15] >> 3);
-		ssl->tmp = rigthrotat(ssl->w[j - 2], 17) ^
-		rigthrotat(ssl->w[j - 2], 19) ^ (ssl->w[j - 2] >> 10);
-		ssl->w[j] = ssl->w[j - 16] + ssl->tmp4 + ssl->w[j - 7] + ssl->tmp;
+		ssl->tmp2 = rotate(ssl->w[j - 15], 7) ^
+		rotate(ssl->w[j - 15], 18) ^ (ssl->w[j - 15] >> 3);
+		ssl->tmp = rotate(ssl->w[j - 2], 17) ^
+		rotate(ssl->w[j - 2], 19) ^ (ssl->w[j - 2] >> 10);
+		ssl->w[j] = ssl->w[j - 16] + ssl->tmp2 + ssl->w[j - 7] + ssl->tmp;
 		j++;
 	}
 	ssl->a = ssl->a0;
@@ -64,7 +69,7 @@ void       schedule(t_ssl *ssl, int i)
 	ssl->h = ssl->h0;
 }
 
-static int	set_variables(unsigned char *line, size_t length, t_ssl *ssl)
+static int	 set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 {
   int i;
 
@@ -83,12 +88,9 @@ static int	set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 	ft_bzero(ssl->msg_32, 16 * ssl->chunk * 4);
 	ft_memcpy((char *)ssl->msg_32, line, length);
   ((char*)ssl->msg_32)[length] = 0x80;
-	i = 0;
-	while (i < (ssl->chunk * 16) - 1)
-	{
+	i = -1;
+	while (++i < (ssl->chunk * 16) - 1)
 		ssl->msg_32[i] = reverse_number(ssl->msg_32[i]);
-		i++;
-	}
 	ssl->msg_32[((ssl->chunk * 512 - 64) / 32) + 1] = ssl->len;
 	return (0);
 }

@@ -3,6 +3,8 @@
 
 # include "../libft/libft.h"
 # include <stdint.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 
 # define STDIN 0
 # define STRING 1
@@ -44,10 +46,6 @@ typedef struct    s_ssl
   uint32_t        *w;
   uint32_t        tmp;
   uint32_t        tmp2;
-  uint32_t        tmp3;
-  uint32_t        tmp4;
-  uint32_t        tmp5;
-  uint32_t        tmp6;
   uint32_t        *msg_32;
   size_t          len;
   int             chunk;
@@ -55,8 +53,12 @@ typedef struct    s_ssl
   int             origin;
 }                 t_ssl;
 
+void      usage(void);
+void	    error(char *arg);
 void      no_such_file(char *file_name, char *hash);
 void      read_error(char *file_name, char *hash);
+void      processing(t_ssl *ssl, int argc, char **args);
+void      flags(t_ssl *ssl, int argc, char **argv);
 uint32_t	reverse_number(uint32_t n);
 int		    md5(t_ssl *ssl, size_t length, uint8_t *line);
 void      print_md5(t_ssl *ssl);

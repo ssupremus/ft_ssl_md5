@@ -1,5 +1,4 @@
 #include "../includes/ft_ssl.h"
-#include <stdio.h>
 
 static const uint32_t s[] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17,
 	22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16,
@@ -25,22 +24,22 @@ static const uint32_t k[] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-uint32_t	leftrotate(uint32_t x, uint32_t c)
+static uint32_t	rotate(uint32_t x, uint32_t c)
 {
 	return (((x) << (c)) | ((x) >> (32 - (c))));
 }
 
-void  md5_swap(t_ssl *ssl, int i)
+static void			md5_swap(t_ssl *ssl, int i)
 {
 	ssl->f = ssl->f + ssl->a + k[i] + ssl->w[ssl->g];
 	ssl->tmp = ssl->d;
 	ssl->d = ssl->c;
 	ssl->c = ssl->b;
-	ssl->b = ssl->b + leftrotate(ssl->f, s[i]);
+	ssl->b = ssl->b + rotate(ssl->f, s[i]);
 	ssl->a = ssl->tmp;
 }
 
-void  md5_loop(t_ssl *ssl, int i)
+static void			md5_loop(t_ssl *ssl, int i)
 {
 	if (i < 16)
 	{

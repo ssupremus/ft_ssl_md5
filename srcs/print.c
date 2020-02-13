@@ -6,7 +6,7 @@ uint32_t	reverse_number(uint32_t n)
 		((n & 0xff00) << 8) | (n << 24));
 }
 
-void print_block(uint32_t block)
+static void	print_block(uint32_t block)
 {
 	int		i;
 	char	*buffer;
@@ -19,7 +19,7 @@ void print_block(uint32_t block)
 	ft_strdel(&buffer);
 }
 
-void	print_left(t_ssl *ssl, char *hash)
+static void	print_left(t_ssl *ssl, char *hash)
 {
 	if (ssl->origin == STRING)
 	{
@@ -37,7 +37,7 @@ void	print_left(t_ssl *ssl, char *hash)
 	}
 }
 
-void	print_right(t_ssl *ssl)
+static void	print_right(t_ssl *ssl)
 {
 	if (ssl->origin == STRING)
 	{
@@ -54,8 +54,6 @@ void	print_right(t_ssl *ssl)
 
 void  print_md5(t_ssl *ssl)
 {
-	char *t;
-
 	if (ssl->flags.p && ssl->origin == STDIN)
 		ft_putstr(ssl->line);
 	if (!ssl->flags.r && !ssl->flags.q)
@@ -71,8 +69,6 @@ void  print_md5(t_ssl *ssl)
 
 void		print_sha256(t_ssl *ssl)
 {
-	char	*tmp;
-
 	if (ssl->flags.p && ssl->origin == STDIN)
 		ft_putstr(ssl->line);
 	if (!ssl->flags.r && !ssl->flags.q)
