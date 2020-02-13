@@ -1,5 +1,4 @@
 #include "../includes/ft_ssl.h"
-#include <stdio.h>
 
 uint32_t	reverse_number(uint32_t n)
 {
@@ -78,4 +77,42 @@ void  print_md5(t_ssl *ssl)
 		print_right(ssl);
 	ft_putchar('\n');
 	free(t);
+}
+
+void		print_sha256(t_ssl *ssl)
+{
+	char	*tmp;
+
+	tmp = ft_itoa_base(ssl->a0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = ft_itoa_base(ssl->b0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = ft_itoa_base(ssl->c0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = ft_itoa_base(ssl->d0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = ft_itoa_base(ssl->e0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = ft_itoa_base(ssl->f0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = ft_itoa_base(ssl->g0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
+	tmp = ft_itoa_base(ssl->h0, 16);
+	add0(tmp);
+	ft_putstr(tmp);
+	free(tmp);
 }

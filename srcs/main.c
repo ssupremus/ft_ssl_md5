@@ -64,6 +64,8 @@ void	processing(t_ssl *ssl, int argc, char **args)
 		ssl->line = ft_strjoin(line, "\n");
 		if (ft_strcmp(args[1], "md5") == 0)
 			md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+		else if (ft_strcmp(args[1], "sha256") == 0)
+			sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 		ft_strdel(&ssl->line);
 		ft_strdel(&line);
 	}
@@ -71,7 +73,10 @@ void	processing(t_ssl *ssl, int argc, char **args)
 	{
 		ssl->origin = STRING;
 		ssl->line = ft_strdup(args[ssl->string_index]);
-		md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+		if (ft_strcmp(args[1], "md5") == 0)
+			md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+		else if (ft_strcmp(args[1], "sha256") == 0)
+			sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 		ft_strdel(&ssl->line);
 	}
 	if (ssl->file_index)
@@ -84,18 +89,21 @@ void	processing(t_ssl *ssl, int argc, char **args)
 			{
 					ssl->origin = FILES;
 					if (get_next_line(fd, &line) == -1)
-						read_error(ssl->file_name);
+						read_error(ssl->file_name, "md5");
 					else
 					{
 							ssl->line = ft_strjoin(line, "\n");
-							md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+							if (ft_strcmp(args[1], "md5") == 0)
+								md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+							else if (ft_strcmp(args[1], "sha256") == 0)
+								sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 							ft_strdel(&ssl->line);
 							ft_strdel(&line);
 					}
 					close(fd);
 			}
 			else
-				no_such_file(ssl->file_name);
+				no_such_file(ssl->file_name, "md5");
 			ft_strdel(&ssl->file_name);
 			ssl->file_index++;
 		}

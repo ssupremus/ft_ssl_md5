@@ -7,6 +7,8 @@
 # define STDIN 0
 # define STRING 1
 # define FILES 2
+# define MD5 5
+# define SHA256 256
 
 typedef struct    s_flag
 {
@@ -27,6 +29,10 @@ typedef struct    s_ssl
   uint32_t        b0;
   uint32_t        c0;
   uint32_t        d0;
+  uint32_t        e0;
+  uint32_t        f0;
+  uint32_t        g0;
+  uint32_t        h0;
   uint32_t        a;
   uint32_t        b;
   uint32_t        c;
@@ -34,17 +40,27 @@ typedef struct    s_ssl
   uint32_t        e;
   uint32_t        f;
   uint32_t        g;
+  uint32_t        h;
   uint32_t        *w;
   uint32_t        tmp;
+  uint32_t        tmp2;
+  uint32_t        tmp3;
+  uint32_t        tmp4;
+  uint32_t        tmp5;
+  uint32_t        tmp6;
+  uint32_t        *msg_32;
   size_t          len;
   int             chunk;
   unsigned char   *padded_message;
   int             origin;
 }                 t_ssl;
 
-int		md5(t_ssl *ssl, size_t length, uint8_t *line);
-void  print_md5(t_ssl *ssl);
-void  no_such_file(char *file_name);
-void  read_error(char *file_name);
+void      no_such_file(char *file_name, char *hash);
+void      read_error(char *file_name, char *hash);
+uint32_t	reverse_number(uint32_t n);
+int		    md5(t_ssl *ssl, size_t length, uint8_t *line);
+void      print_md5(t_ssl *ssl);
+void		  print_sha256(t_ssl *ssl);
+int		    sha256(t_ssl *ssl, size_t length, uint8_t *line);
 
 #endif

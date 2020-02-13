@@ -65,7 +65,7 @@ void  md5_loop(t_ssl *ssl, int i)
 	md5_swap(ssl, i);
 }
 
-int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
+static int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 {
 	ssl->a0 = 0x67452301;
 	ssl->b0 = 0xefcdab89;
@@ -78,8 +78,8 @@ int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 		return (-1);
 	ft_bzero(ssl->padded_message, ssl->len + 64);
 	ft_strcpy((char *)ssl->padded_message, (const char *)line);
-	*(uint32_t*)(ssl->padded_message + length) = 0x80;
-	*(uint32_t*)(ssl->padded_message + ssl->len) = (uint32_t)(8 * length);
+	*(uint32_t *)(ssl->padded_message + length) = 0x80;
+	*(uint32_t *)(ssl->padded_message + ssl->len) = (uint32_t)(8 * length);
 	ssl->chunk = 0;
 	return (0);
 }
