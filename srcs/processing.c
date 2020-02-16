@@ -28,11 +28,15 @@ void	     flags(t_ssl *ssl, int argc, char **argv)
 	}
 }
 
+#include <stdio.h>
+
 static void	read_file(t_ssl *ssl, char **args)
 {
 	int		fd;
 	char	*line;
+	int		gnl;
 
+	line = NULL;
 	ssl->file_name = ft_strdup(args[ssl->file_index]);
 	fd = open(ssl->file_name, O_RDONLY);
 	if (fd != -1)
@@ -41,13 +45,19 @@ static void	read_file(t_ssl *ssl, char **args)
 				read_error(ssl->file_name, "md5");
 			else
 			{
-					ssl->line = ft_strjoin(line, "\n");
+					if (line == NULL)
+						ssl->line = "\0";
+					else
+						ssl->line = ft_strjoin(line, "\n");
 					if (ft_strcmp(args[1], "md5") == 0)
 						md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 					else if (ft_strcmp(args[1], "sha256") == 0)
 						sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-					ft_strdel(&ssl->line);
-					ft_strdel(&line);
+					if (line != NULL)
+					{
+						ft_strdel(&ssl->line);
+						ft_strdel(&line);
+					}
 			}
 			close(fd);
 	}
