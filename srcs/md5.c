@@ -70,9 +70,8 @@ static int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 	ssl->b0 = 0xefcdab89;
 	ssl->c0 = 0x98badcfe;
 	ssl->d0 = 0x10325476;
-	ssl->len = length + 1;
-	while (ssl->len % 64 != 56)
-		ssl->len++;
+	ssl->len = length;
+	while (++ssl->len % 64 != 56);
 	if (!(ssl->padded_message = malloc(ssl->len + 64)))
 		return (-1);
 	ft_bzero(ssl->padded_message, ssl->len + 64);

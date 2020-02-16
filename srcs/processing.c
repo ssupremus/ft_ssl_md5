@@ -1,6 +1,6 @@
 #include "../includes/ft_ssl.h"
 
-void	flags(t_ssl *ssl, int argc, char **argv)
+void	     flags(t_ssl *ssl, int argc, char **argv)
 {
 	int	i;
 
@@ -28,7 +28,7 @@ void	flags(t_ssl *ssl, int argc, char **argv)
 	}
 }
 
-void	read_file(t_ssl *ssl, char **args)
+static void	read_file(t_ssl *ssl, char **args)
 {
 	int		fd;
 	char	*line;
@@ -57,7 +57,7 @@ void	read_file(t_ssl *ssl, char **args)
 	ssl->file_index++;
 }
 
-void  read_string(t_ssl *ssl, char **args)
+static void read_string(t_ssl *ssl, char **args)
 {
   ssl->origin = STRING;
   ssl->line = ft_strdup(args[ssl->string_index]);
@@ -68,10 +68,11 @@ void  read_string(t_ssl *ssl, char **args)
   ft_strdel(&ssl->line);
 }
 
-void	processing(t_ssl *ssl, int argc, char **args)
+void	      processing(t_ssl *ssl, int argc, char **args)
 {
 	char	*line;
 
+	flags(ssl, argc, args);
 	if (ssl->flags.p || (!ssl->flags.s && !ssl->file_index))
 	{
 		ssl->origin = STDIN;

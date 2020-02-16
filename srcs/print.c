@@ -1,9 +1,9 @@
 #include "../includes/ft_ssl.h"
 
-uint32_t	reverse_number(uint32_t n)
+uint32_t	reverse_number(uint32_t number)
 {
-	return ((n >> 24) | ((n & 0xff0000) >> 8) |
-		((n & 0xff00) << 8) | (n << 24));
+	return ((number >> 24) | ((number & 0xff0000) >> 8) |
+		((number & 0xff00) << 8) | (number << 24));
 }
 
 static void	print_block(uint32_t block)

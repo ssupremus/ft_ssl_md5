@@ -1,6 +1,6 @@
 #include "../includes/ft_ssl.h"
 
-void	initialize(t_ssl *ssl)
+static void	initialize(t_ssl *ssl)
 {
 	ssl->flags.p = 0;
 	ssl->flags.q = 0;
@@ -11,7 +11,7 @@ void	initialize(t_ssl *ssl)
 	ssl->file_name = NULL;
 }
 
-int	main(int argc, char **argv)
+int					main(int argc, char **argv)
 {
 	t_ssl	ssl;
 
