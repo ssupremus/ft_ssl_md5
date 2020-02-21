@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   processing.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/04/25 12:06:20 by ysushkov          #+#    #+#             */
+/*   Updated: 2019/07/10 17:56:52 by ysushkov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_ssl.h"
 
 void	     flags(t_ssl *ssl, int argc, char **argv)
@@ -43,10 +55,7 @@ static void	read_file(t_ssl *ssl, char **args)
 			read_error(ssl->file_name, args[1]);
 		else
 		{
-			if (line == NULL)
-				ssl->line = "\0";
-			else
-				ssl->line = ft_strdup(line);
+			ssl->line = ft_strdup(line);
 			if (ft_strcmp(args[1], "md5") == 0)
 				md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 			else if (ft_strcmp(args[1], "sha256") == 0)
