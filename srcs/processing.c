@@ -28,8 +28,6 @@ void	     flags(t_ssl *ssl, int argc, char **argv)
 	}
 }
 
-#include <stdio.h>
-
 static void	read_file(t_ssl *ssl, char **args)
 {
 	int		fd;
@@ -41,41 +39,41 @@ static void	read_file(t_ssl *ssl, char **args)
 	fd = open(ssl->file_name, O_RDONLY);
 	if (fd != -1)
 	{
-			if (get_next_line(fd, &line) == -1)
-				read_error(ssl->file_name, "md5");
+		if (get_next_line(fd, &line) == -1)
+			read_error(ssl->file_name, args[1]);
+		else
+		{
+			if (line == NULL)
+				ssl->line = "\0";
 			else
+				ssl->line = ft_strdup(line);
+			if (ft_strcmp(args[1], "md5") == 0)
+				md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+			else if (ft_strcmp(args[1], "sha256") == 0)
+				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+			if (line != NULL)
 			{
-					if (line == NULL)
-						ssl->line = "\0";
-					else
-						ssl->line = ft_strjoin(line, "\n");
-					if (ft_strcmp(args[1], "md5") == 0)
-						md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-					else if (ft_strcmp(args[1], "sha256") == 0)
-						sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-					if (line != NULL)
-					{
-						ft_strdel(&ssl->line);
-						ft_strdel(&line);
-					}
+				ft_strdel(&ssl->line);
+				ft_strdel(&line);
 			}
-			close(fd);
+		}
+		close(fd);
 	}
 	else
-		no_such_file(ssl->file_name, "md5");
+		no_such_file(ssl->file_name, args[1]);
 	ft_strdel(&ssl->file_name);
 	ssl->file_index++;
-}
+	}
 
 static void read_string(t_ssl *ssl, char **args)
 {
-  ssl->origin = STRING;
-  ssl->line = ft_strdup(args[ssl->string_index]);
-  if (ft_strcmp(args[1], "md5") == 0)
-    md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-  else if (ft_strcmp(args[1], "sha256") == 0)
-    sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-  ft_strdel(&ssl->line);
+	ssl->origin = STRING;
+	ssl->line = ft_strdup(args[ssl->string_index]);
+	if (ft_strcmp(args[1], "md5") == 0)
+		md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+	else if (ft_strcmp(args[1], "sha256") == 0)
+		sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+	ft_strdel(&ssl->line);
 }
 
 void	      processing(t_ssl *ssl, int argc, char **args)
@@ -87,7 +85,7 @@ void	      processing(t_ssl *ssl, int argc, char **args)
 	{
 		ssl->origin = STDIN;
 		get_next_line(STDIN, &line);
-		ssl->line = ft_strjoin(line, "\n");
+		ssl->line = ft_strdup(line);
 		if (ft_strcmp(args[1], "md5") == 0)
 			md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 		else if (ft_strcmp(args[1], "sha256") == 0)

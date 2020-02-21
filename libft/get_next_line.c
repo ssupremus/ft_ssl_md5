@@ -40,7 +40,7 @@ static char		*redding(const int fd, char **str)
 		ft_strdel(str);
 		*str = ft_strdup(temp);
 		ft_strdel(&temp);
-		if (ft_strchr(buf, 10))
+		if (ft_strchr(buf, DIV))
 			break ;
 	}
 	if (ret < 0)
@@ -82,12 +82,17 @@ int				get_next_line(const int fd, char **line)
 	if ((!(str = redding(fd, &str))))
 		return (-1);
 	r = 0;
+	if (DIV == 0)
+	{
+		*line = ft_strdup(str);
+		return (1);
+	}
 	if (*(str + r) != 0)
 	{
-		while (*(str + r) != 10 && *(str + r) != 0)
+		while (*(str + r) != DIV && *(str + r) != 0)
 			r++;
 		*line = ft_strsub(str, 0, r);
-		if (*(str + r) == 10)
+		if (*(str + r) == DIV)
 			r++;
 		temp = ft_strsub(str, r, (ft_strlen(str) - r));
 		ft_strdel(&str);
