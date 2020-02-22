@@ -113,7 +113,7 @@ void	      processing(t_ssl *ssl, int argc, char **args)
 		ft_strdel(&line);
 	}
 	if (ssl->flags.s && ssl->string_index)
-    read_string(ssl, argc, args);
+		read_string(ssl, argc, args);
 	if (ssl->file_index)
 	{
 		ssl->origin = FILES;
