@@ -68,6 +68,7 @@ typedef struct    s_ssl
 void      usage(void);
 void	    error(char *arg);
 void      no_such_file(char *file_name, char *hash);
+void      string_error(char *hash);
 void      read_error(char *file_name, char *hash);
 void      processing(t_ssl *ssl, int argc, char **args);
 void      flags(t_ssl *ssl, int argc, char **argv);

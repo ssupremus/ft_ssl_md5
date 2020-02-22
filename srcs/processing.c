@@ -40,14 +40,14 @@ void	     flags(t_ssl *ssl, int argc, char **argv)
 	}
 }
 
-static void	read_file(t_ssl *ssl, char **args)
+static void	read_file(t_ssl *ssl, char **args, int index)
 {
 	int		fd;
 	char	*line;
-	int		gnl;
 
 	line = NULL;
-	ssl->file_name = ft_strdup(args[ssl->file_index]);
+	ssl->line = NULL;
+	ssl->file_name = ft_strdup(args[index]);
 	fd = open(ssl->file_name, O_RDONLY);
 	if (fd != -1)
 	{
@@ -61,28 +61,39 @@ static void	read_file(t_ssl *ssl, char **args)
 			else if (ft_strcmp(args[1], "sha256") == 0)
 				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 			if (line != NULL)
-			{
-				ft_strdel(&ssl->line);
 				ft_strdel(&line);
-			}
+			if (ssl->line != NULL)	
+				ft_strdel(&ssl->line);
 		}
 		close(fd);
 	}
 	else
 		no_such_file(ssl->file_name, args[1]);
 	ft_strdel(&ssl->file_name);
-	ssl->file_index++;
-	}
+}
 
-static void read_string(t_ssl *ssl, char **args)
+static void read_string(t_ssl *ssl, int argc, char **args)
 {
+	int i;
+
+	i = 1;
 	ssl->origin = STRING;
-	ssl->line = ft_strdup(args[ssl->string_index]);
-	if (ft_strcmp(args[1], "md5") == 0)
-		md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-	else if (ft_strcmp(args[1], "sha256") == 0)
-		sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-	ft_strdel(&ssl->line);
+	while (++i < argc)
+	{
+		if (i < ssl->string_index && ft_strcmp(args[i], "-s") == 0)
+		{
+			ssl->line = ft_strdup(args[i + 1]);
+			if (ft_strcmp(args[1], "md5") == 0)
+				md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+			else if (ft_strcmp(args[1], "sha256") == 0)
+				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+			ft_strdel(&ssl->line);
+		}
+		else if (i > ssl->string_index && ft_strcmp(args[i], "-s") == 0)
+		{
+			string_error(args[1]);
+		}
+	}
 }
 
 void	      processing(t_ssl *ssl, int argc, char **args)
@@ -103,11 +114,11 @@ void	      processing(t_ssl *ssl, int argc, char **args)
 		ft_strdel(&line);
 	}
 	if (ssl->flags.s && ssl->string_index)
-    read_string(ssl, args);
+    read_string(ssl, argc, args);
 	if (ssl->file_index)
 	{
 		ssl->origin = FILES;
 		while (ssl->file_index < argc)
-			read_file(ssl, args);
+			read_file(ssl, args, ssl->file_index++);
 	}
 }

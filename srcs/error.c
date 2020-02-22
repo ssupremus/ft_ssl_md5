@@ -12,21 +12,28 @@
 
 #include "../includes/ft_ssl.h"
 
-void no_such_file(char *file_name, char *hash)
+void	no_such_file(char *file_name, char *hash)
 {
-  ft_putstr("ft_ssl: ");
-  ft_putstr(hash);
-  ft_putstr(": ");
-  ft_putstr(file_name);
-  ft_putendl(": No such file or directory");
+	ft_putstr("ft_ssl: ");
+	ft_putstr(hash);
+	ft_putstr(": ");
+	ft_putstr(file_name);
+	ft_putendl(": No such file or directory");
 }
 
-void read_error(char *file_name, char *hash)
+void	string_error(char *hash)
 {
-  ft_putstr("ft_ssl: ");
-  ft_putstr(hash);
-  ft_putstr(": read error in ");
-  ft_putendl(file_name);
+	ft_putstr("ft_ssl: ");
+	ft_putstr(hash);
+	ft_putendl(": -s flag should be followed by a string");
+}
+
+void	read_error(char *file_name, char *hash)
+{
+	ft_putstr("ft_ssl: ");
+	ft_putstr(hash);
+	ft_putstr(": read error in ");
+	ft_putendl(file_name);
 }
 
 void	usage(void)

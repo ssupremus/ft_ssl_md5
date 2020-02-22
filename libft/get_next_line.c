@@ -27,6 +27,7 @@ static char		*ft_glue(char const *s1, char const *s2)
 
 static char		*redding(const int fd, char **str)
 {
+	int				i;
 	int				ret;
 	char			*temp;
 	char			buf[BUFF_SIZE + 1];
@@ -40,7 +41,10 @@ static char		*redding(const int fd, char **str)
 		ft_strdel(str);
 		*str = ft_strdup(temp);
 		ft_strdel(&temp);
-		if (ft_strchr(buf, DIV))
+		i = 0;
+		while (buf[i] != DIV && buf[i] != 0)
+			i++;
+		if (i < ret)
 			break ;
 	}
 	if (ret < 0)
@@ -85,6 +89,7 @@ int				get_next_line(const int fd, char **line)
 	if (DIV == 0)
 	{
 		*line = ft_strdup(str);
+		ft_strdel(&str);
 		return (1);
 	}
 	if (*(str + r) != 0)
