@@ -46,7 +46,6 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 	char	*line;
 
 	line = NULL;
-	ssl->line = NULL;
 	ssl->file_name = ft_strdup(args[index]);
 	fd = open(ssl->file_name, O_RDONLY);
 	if (fd != -1)
@@ -89,7 +88,7 @@ static void read_string(t_ssl *ssl, int argc, char **args)
 				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 			ft_strdel(&ssl->line);
 		}
-		else if (i > ssl->string_index && ft_strcmp(args[i], "-s") == 0)
+		else if ((i + 1) == argc && ft_strcmp(args[i], "-s") == 0 && !ssl->file_index)
 		{
 			string_error(args[1]);
 		}

@@ -52,5 +52,9 @@ void	error(char *arg)
 	ft_putendl("md5");
 	ft_putendl("sha256");
 	ft_putendl("\nCipher commands:");
+	ft_putendl("-p, echo STDIN to STDOUT and append the checksum to STDOUT");
+	ft_putendl("-q, quiet mode");
+	ft_putendl("-r, reverse the format of the output.");
+	ft_putendl("-s, print the sum of the given string");
 	exit(-1);
 }
