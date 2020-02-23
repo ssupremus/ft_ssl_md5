@@ -12,12 +12,14 @@
 
 #include "../includes/ft_ssl.h"
 
-static const uint32_t s[] = {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17,
+static const uint32_t	s[] = {
+	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17,
 	22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16,
 	23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15,
-	21, 6, 10, 15, 21, 6, 10, 15, 21};
+	21, 6, 10, 15, 21, 6, 10, 15, 21
+};
 
-static const uint32_t k[] = {
+static const uint32_t	k[] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -36,7 +38,7 @@ static const uint32_t k[] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-static uint32_t	rotate(uint32_t x, uint32_t c)
+static uint32_t		rotate(uint32_t x, uint32_t c)
 {
 	return (((x) << (c)) | ((x) >> (32 - (c))));
 }
@@ -94,7 +96,7 @@ static int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 	return (0);
 }
 
-int		md5(t_ssl *ssl, size_t length, uint8_t *line)
+int				md5(t_ssl *ssl, size_t length, uint8_t *line)
 {
 	int i;
 
