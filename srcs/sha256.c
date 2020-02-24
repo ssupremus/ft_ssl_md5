@@ -26,11 +26,6 @@ static uint32_t		g_k[] = {
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static uint32_t		rotate(uint32_t x, uint32_t n)
-{
-	return ((((unsigned int)x >> n)) | (x << (32 - n)));
-}
-
 static void			sha256_loop(t_ssl *ssl, int i)
 {
 	uint32_t s1;
@@ -38,10 +33,10 @@ static void			sha256_loop(t_ssl *ssl, int i)
 	uint32_t ch;
 	uint32_t maj;
 
-	s1 = rotate(ssl->e, 6) ^ rotate(ssl->e, 11) ^ rotate(ssl->e, 25);
+	s1 = RIGHT(ssl->e, 6) ^ RIGHT(ssl->e, 11) ^ RIGHT(ssl->e, 25);
 	ch = (ssl->e & ssl->f) ^ ((~ssl->e) & ssl->g);
-	ssl->tmp = ssl->h + s1 + ch + g_k[i] + ssl->w[i];
-	s0 = rotate(ssl->a, 2) ^ rotate(ssl->a, 13) ^ rotate(ssl->a, 22);
+	ssl->tmp = ssl->h + s1 + ch + g_k[i] + ssl->m[i];
+	s0 = RIGHT(ssl->a, 2) ^ RIGHT(ssl->a, 13) ^ RIGHT(ssl->a, 22);
 	maj = (ssl->a & ssl->b) ^ (ssl->a & ssl->c) ^ (ssl->b & ssl->c);
 	ssl->tmp2 = s0 + maj;
 	ssl->h = ssl->g;
@@ -58,17 +53,17 @@ static void			schedule(t_ssl *ssl, int i)
 {
 	int j;
 
-	ssl->w = malloc(512);
-	ft_bzero(ssl->w, 512);
-	ft_memcpy(ssl->w, &ssl->msg_32[i * 16], 16 * 32);
+	ssl->m = malloc(512);
+	ft_bzero(ssl->m, 512);
+	ft_memcpy(ssl->m, &ssl->msg_32[i * 16], 16 * 32);
 	j = 16;
 	while (j < 64)
 	{
-		ssl->tmp2 = rotate(ssl->w[j - 15], 7) ^
-		rotate(ssl->w[j - 15], 18) ^ (ssl->w[j - 15] >> 3);
-		ssl->tmp = rotate(ssl->w[j - 2], 17) ^
-		rotate(ssl->w[j - 2], 19) ^ (ssl->w[j - 2] >> 10);
-		ssl->w[j] = ssl->w[j - 16] + ssl->tmp2 + ssl->w[j - 7] + ssl->tmp;
+		ssl->tmp2 = RIGHT(ssl->m[j - 15], 7) ^
+		RIGHT(ssl->m[j - 15], 18) ^ (ssl->m[j - 15] >> 3);
+		ssl->tmp = RIGHT(ssl->m[j - 2], 17) ^
+		RIGHT(ssl->m[j - 2], 19) ^ (ssl->m[j - 2] >> 10);
+		ssl->m[j] = ssl->m[j - 16] + ssl->tmp2 + ssl->m[j - 7] + ssl->tmp;
 		j++;
 	}
 	ssl->a = ssl->a0;
@@ -128,7 +123,7 @@ int					sha256(t_ssl *ssl, size_t length, uint8_t *line)
 		ssl->f0 += ssl->f;
 		ssl->g0 += ssl->g;
 		ssl->h0 += ssl->h;
-		free(ssl->w);
+		free(ssl->m);
 		i++;
 	}
 	print_sha256(ssl);

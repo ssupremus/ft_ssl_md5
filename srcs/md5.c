@@ -38,18 +38,13 @@ static uint32_t		g_k[] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
-static uint32_t		rotate(uint32_t x, uint32_t c)
-{
-	return (((x) << (c)) | ((x) >> (32 - (c))));
-}
-
 static void			md5_swap(t_ssl *ssl, int i)
 {
-	ssl->f = ssl->f + ssl->a + g_k[i] + ssl->w[ssl->g];
+	ssl->f = ssl->f + ssl->a + g_k[i] + ssl->m[ssl->g];
 	ssl->tmp = ssl->d;
 	ssl->d = ssl->c;
 	ssl->c = ssl->b;
-	ssl->b = ssl->b + rotate(ssl->f, g_s[i]);
+	ssl->b = ssl->b + LEFT(ssl->f, g_s[i]);
 	ssl->a = ssl->tmp;
 }
 
@@ -105,7 +100,7 @@ int					md5(t_ssl *ssl, size_t length, uint8_t *line)
 		return (-1);
 	while (ssl->chunk < ssl->len)
 	{
-		ssl->w = (uint32_t *)(ssl->padded_message + ssl->chunk);
+		ssl->m = (uint32_t *)(ssl->padded_message + ssl->chunk);
 		ssl->a = ssl->a0;
 		ssl->b = ssl->b0;
 		ssl->c = ssl->c0;

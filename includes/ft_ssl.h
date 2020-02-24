@@ -24,6 +24,8 @@
 # define MD5 5
 # define SHA256 256
 # define R(n) ((n >> 24)|((n & 0xff0000) >> 8)|((n & 0xff00) << 8)|(n << 24))
+# define LEFT(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
+# define RIGHT(x, y) ((x >> y) | (x << (32 - y)))
 
 typedef struct		s_flag
 {
@@ -56,7 +58,7 @@ typedef struct		s_ssl
 	uint32_t		f;
 	uint32_t		g;
 	uint32_t		h;
-	uint32_t		*w;
+	uint32_t		*m;
 	uint32_t		tmp;
 	uint32_t		tmp2;
 	uint32_t		*msg_32;
