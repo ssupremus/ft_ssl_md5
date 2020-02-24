@@ -102,7 +102,7 @@ static int			variables(unsigned char *line, size_t length, t_ssl *ssl)
 	((char*)ssl->msg_32)[length] = 0x80;
 	i = -1;
 	while (++i < (ssl->chunk * 16) - 1)
-		ssl->msg_32[i] = reverse_number(ssl->msg_32[i]);
+		ssl->msg_32[i] = R(ssl->msg_32[i]);
 	ssl->msg_32[((ssl->chunk * 512 - 64) / 32) + 1] = ssl->len;
 	return (0);
 }

@@ -40,6 +40,14 @@ void		flags(t_ssl *ssl, int argc, char **argv)
 	}
 }
 
+static void	send_line(t_ssl *ssl, char **args)
+{
+	if (ft_strcmp(args[1], "md5") == 0)
+		md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+	else if (ft_strcmp(args[1], "sha256") == 0)
+		sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+}
+
 static void	read_file(t_ssl *ssl, char **args, int index)
 {
 	int		fd;
@@ -55,10 +63,7 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 		else
 		{
 			ssl->line = ft_strdup(line);
-			if (ft_strcmp(args[1], "md5") == 0)
-				md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-			else if (ft_strcmp(args[1], "sha256") == 0)
-				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+			send_line(ssl, args);
 			if (line != NULL)
 			{
 				ft_strdel(&line);
