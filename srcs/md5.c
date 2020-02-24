@@ -6,20 +6,20 @@
 /*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/25 12:06:20 by ysushkov          #+#    #+#             */
-/*   Updated: 2019/07/10 17:56:52 by ysushkov         ###   ########.fr       */
+/*   Updated: 2020/02/24 20:12:34 by ysushkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
 
-static const uint32_t	s[] = {
+static uint32_t		g_s[] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17,
 	22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16,
 	23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15,
 	21, 6, 10, 15, 21, 6, 10, 15, 21
 };
 
-static const uint32_t	k[] = {
+static uint32_t		g_k[] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -45,11 +45,11 @@ static uint32_t		rotate(uint32_t x, uint32_t c)
 
 static void			md5_swap(t_ssl *ssl, int i)
 {
-	ssl->f = ssl->f + ssl->a + k[i] + ssl->w[ssl->g];
+	ssl->f = ssl->f + ssl->a + g_k[i] + ssl->w[ssl->g];
 	ssl->tmp = ssl->d;
 	ssl->d = ssl->c;
 	ssl->c = ssl->b;
-	ssl->b = ssl->b + rotate(ssl->f, s[i]);
+	ssl->b = ssl->b + rotate(ssl->f, g_s[i]);
 	ssl->a = ssl->tmp;
 }
 
@@ -78,14 +78,15 @@ static void			md5_loop(t_ssl *ssl, int i)
 	md5_swap(ssl, i);
 }
 
-static int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
+static int			variables(unsigned char *line, size_t length, t_ssl *ssl)
 {
 	ssl->a0 = 0x67452301;
 	ssl->b0 = 0xefcdab89;
 	ssl->c0 = 0x98badcfe;
 	ssl->d0 = 0x10325476;
-	ssl->len = length;
-	while (++ssl->len % 64 != 56);
+	ssl->len = length + 1;
+	while (ssl->len % 64 != 56)
+		ssl->len++;
 	if (!(ssl->padded_message = malloc(ssl->len + 64)))
 		return (-1);
 	ft_bzero(ssl->padded_message, ssl->len + 64);
@@ -96,11 +97,11 @@ static int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 	return (0);
 }
 
-int				md5(t_ssl *ssl, size_t length, uint8_t *line)
+int					md5(t_ssl *ssl, size_t length, uint8_t *line)
 {
 	int i;
 
-	if (set_variables(line, length, ssl) == -1)
+	if (variables(line, length, ssl) == -1)
 		return (-1);
 	while (ssl->chunk < ssl->len)
 	{

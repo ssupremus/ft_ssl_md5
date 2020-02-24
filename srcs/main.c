@@ -6,7 +6,7 @@
 /*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/25 12:06:20 by ysushkov          #+#    #+#             */
-/*   Updated: 2019/07/10 17:56:52 by ysushkov         ###   ########.fr       */
+/*   Updated: 2020/02/24 19:47:06 by ysushkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ int			main(int argc, char **argv)
 	flags(&ssl, argc, argv);
 	if (argc == 1)
 		usage();
-	else if (ft_strcmp(argv[1], "md5") == 0 || ft_strcmp(argv[1], "sha256") == 0)
+	else if (ft_strcmp(argv[1], "md5") == 0 ||
+			ft_strcmp(argv[1], "sha256") == 0)
 		processing(&ssl, argc, argv);
 	else
 		error(argv[1]);

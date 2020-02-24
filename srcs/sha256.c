@@ -6,13 +6,13 @@
 /*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/25 12:06:20 by ysushkov          #+#    #+#             */
-/*   Updated: 2019/07/10 17:56:52 by ysushkov         ###   ########.fr       */
+/*   Updated: 2020/02/24 20:11:20 by ysushkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
 
-static			uint32_t k[] = {
+static uint32_t		g_k[] = {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
 	0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
 	0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786,
@@ -26,12 +26,12 @@ static			uint32_t k[] = {
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static uint32_t	rotate(uint32_t x, uint32_t n)
+static uint32_t		rotate(uint32_t x, uint32_t n)
 {
 	return ((((unsigned int)x >> n)) | (x << (32 - n)));
 }
 
-static void		sha256_loop(t_ssl *ssl, int i)
+static void			sha256_loop(t_ssl *ssl, int i)
 {
 	uint32_t s1;
 	uint32_t s0;
@@ -40,7 +40,7 @@ static void		sha256_loop(t_ssl *ssl, int i)
 
 	s1 = rotate(ssl->e, 6) ^ rotate(ssl->e, 11) ^ rotate(ssl->e, 25);
 	ch = (ssl->e & ssl->f) ^ ((~ssl->e) & ssl->g);
-	ssl->tmp = ssl->h + s1 + ch + k[i] + ssl->w[i];
+	ssl->tmp = ssl->h + s1 + ch + g_k[i] + ssl->w[i];
 	s0 = rotate(ssl->a, 2) ^ rotate(ssl->a, 13) ^ rotate(ssl->a, 22);
 	maj = (ssl->a & ssl->b) ^ (ssl->a & ssl->c) ^ (ssl->b & ssl->c);
 	ssl->tmp2 = s0 + maj;
@@ -54,7 +54,7 @@ static void		sha256_loop(t_ssl *ssl, int i)
 	ssl->a = ssl->tmp + ssl->tmp2;
 }
 
-static void    schedule(t_ssl *ssl, int i)
+static void			schedule(t_ssl *ssl, int i)
 {
 	int j;
 
@@ -81,7 +81,7 @@ static void    schedule(t_ssl *ssl, int i)
 	ssl->h = ssl->h0;
 }
 
-static int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
+static int			variables(unsigned char *line, size_t length, t_ssl *ssl)
 {
 	int i;
 
@@ -107,31 +107,31 @@ static int		set_variables(unsigned char *line, size_t length, t_ssl *ssl)
 	return (0);
 }
 
-int				sha256(t_ssl *ssl, size_t length, uint8_t *line)
+int					sha256(t_ssl *ssl, size_t length, uint8_t *line)
 {
 	int i;
 	int j;
 
 	i = 0;
-	set_variables(line, length, ssl);
+	variables(line, length, ssl);
 	while (i < ssl->chunk)
 	{
 		schedule(ssl, i);
-	j = 0;
-	while (j < 64)
-		sha256_loop(ssl, j++);
-	ssl->a0 += ssl->a;
-	ssl->b0 += ssl->b;
-	ssl->c0 += ssl->c;
-	ssl->d0 += ssl->d;
-	ssl->e0 += ssl->e;
-	ssl->f0 += ssl->f;
-	ssl->g0 += ssl->g;
-	ssl->h0 += ssl->h;
-	free(ssl->w);
-	i++;
-  }
-  print_sha256(ssl);
-  free(ssl->msg_32);
-  return (0);
+		j = 0;
+		while (j < 64)
+			sha256_loop(ssl, j++);
+		ssl->a0 += ssl->a;
+		ssl->b0 += ssl->b;
+		ssl->c0 += ssl->c;
+		ssl->d0 += ssl->d;
+		ssl->e0 += ssl->e;
+		ssl->f0 += ssl->f;
+		ssl->g0 += ssl->g;
+		ssl->h0 += ssl->h;
+		free(ssl->w);
+		i++;
+	}
+	print_sha256(ssl);
+	free(ssl->msg_32);
+	return (0);
 }

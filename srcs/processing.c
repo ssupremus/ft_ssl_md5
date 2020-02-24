@@ -6,13 +6,13 @@
 /*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/25 12:06:20 by ysushkov          #+#    #+#             */
-/*   Updated: 2019/07/10 17:56:52 by ysushkov         ###   ########.fr       */
+/*   Updated: 2020/02/24 20:03:34 by ysushkov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_ssl.h"
 
-void	     flags(t_ssl *ssl, int argc, char **argv)
+void		flags(t_ssl *ssl, int argc, char **argv)
 {
 	int	i;
 
@@ -60,9 +60,10 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 			else if (ft_strcmp(args[1], "sha256") == 0)
 				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 			if (line != NULL)
+			{
 				ft_strdel(&line);
-			if (ssl->line != NULL)	
 				ft_strdel(&ssl->line);
+			}
 		}
 		close(fd);
 	}
@@ -71,7 +72,7 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 	ft_strdel(&ssl->file_name);
 }
 
-static void read_string(t_ssl *ssl, int argc, char **args)
+static void	read_string(t_ssl *ssl, int argc, char **args)
 {
 	int i;
 
@@ -88,14 +89,13 @@ static void read_string(t_ssl *ssl, int argc, char **args)
 				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 			ft_strdel(&ssl->line);
 		}
-		else if ((i + 1) == argc && ft_strcmp(args[i], "-s") == 0 && !ssl->file_index)
-		{
+		else if ((i + 1) == argc && ft_strcmp(args[i], "-s") == 0 &&
+				!ssl->file_index)
 			string_error(args[1]);
-		}
 	}
 }
 
-void	      processing(t_ssl *ssl, int argc, char **args)
+void		processing(t_ssl *ssl, int argc, char **args)
 {
 	char	*line;
 
