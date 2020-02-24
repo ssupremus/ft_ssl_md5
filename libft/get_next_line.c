@@ -25,9 +25,20 @@ static char		*ft_glue(char const *s1, char const *s2)
 	return (dst);
 }
 
+static int		find_breakpoint(char *buf, int ret)
+{
+	int i;
+
+	i = 0;
+	while (buf[i] != DIV && buf[i] != 0)
+		i++;
+	if (i < ret)
+		return (-1);
+	return (1);
+}
+
 static char		*redding(const int fd, char **str)
 {
-	int				i;
 	int				ret;
 	char			*temp;
 	char			buf[BUFF_SIZE + 1];
@@ -41,10 +52,7 @@ static char		*redding(const int fd, char **str)
 		ft_strdel(str);
 		*str = ft_strdup(temp);
 		ft_strdel(&temp);
-		i = 0;
-		while (buf[i] != DIV && buf[i] != 0)
-			i++;
-		if (i < ret)
+		if (!find_breakpoint(buf, ret))
 			break ;
 	}
 	if (ret < 0)
@@ -78,7 +86,6 @@ static int		ft_check(const int *fd, char **line, char **str)
 int				get_next_line(const int fd, char **line)
 {
 	static char		*str = NULL;
-	char			*temp;
 	size_t			r;
 
 	if (!(ft_check(&fd, line, &str)))
@@ -90,19 +97,6 @@ int				get_next_line(const int fd, char **line)
 	{
 		*line = ft_strdup(str);
 		ft_strdel(&str);
-		return (1);
-	}
-	if (*(str + r) != 0)
-	{
-		while (*(str + r) != DIV && *(str + r) != 0)
-			r++;
-		*line = ft_strsub(str, 0, r);
-		if (*(str + r) == DIV)
-			r++;
-		temp = ft_strsub(str, r, (ft_strlen(str) - r));
-		ft_strdel(&str);
-		str = ft_strdup(temp);
-		ft_strdel(&temp);
 		return (1);
 	}
 	return (0);
