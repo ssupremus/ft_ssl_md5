@@ -21,6 +21,7 @@ static void	initialize(t_ssl *ssl)
 	ssl->string_index = 0;
 	ssl->file_index = 0;
 	ssl->file_name = NULL;
+	ssl->line = NULL;
 }
 
 int			main(int argc, char **argv)

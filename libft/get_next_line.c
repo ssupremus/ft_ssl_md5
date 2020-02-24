@@ -87,16 +87,25 @@ int				get_next_line(const int fd, char **line)
 {
 	static char		*str = NULL;
 	size_t			r;
+	char			*temp;
 
+	temp = NULL;
+	r = 0;
 	if (!(ft_check(&fd, line, &str)))
 		return (-1);
 	if ((!(str = redding(fd, &str))))
 		return (-1);
-	r = 0;
-	if (DIV == 0)
+	if (*(str + r) != 0)
 	{
-		*line = ft_strdup(str);
+		while (*(str + r) != DIV && *(str + r) != 0)
+			r++;
+		*line = ft_strsub(str, 0, r);
+		if (DIV != 0 && *(str + r) == DIV)
+			r++;
+		temp = ft_strsub(str, r, (ft_strlen(str) - r));
 		ft_strdel(&str);
+		str = ft_strdup(temp);
+		ft_strdel(&temp);
 		return (1);
 	}
 	return (0);

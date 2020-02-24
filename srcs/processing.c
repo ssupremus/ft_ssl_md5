@@ -104,6 +104,7 @@ void		processing(t_ssl *ssl, int argc, char **args)
 {
 	char	*line;
 
+	line = NULL;
 	flags(ssl, argc, args);
 	if (ssl->flags.p || (!ssl->flags.s && !ssl->file_index))
 	{
