@@ -102,6 +102,18 @@ static int			variables(unsigned char *line, size_t length, t_ssl *ssl)
 	return (0);
 }
 
+static void			sha256_swap(t_ssl *ssl)
+{
+	ssl->a0 += ssl->a;
+	ssl->b0 += ssl->b;
+	ssl->c0 += ssl->c;
+	ssl->d0 += ssl->d;
+	ssl->e0 += ssl->e;
+	ssl->f0 += ssl->f;
+	ssl->g0 += ssl->g;
+	ssl->h0 += ssl->h;
+}
+
 int					sha256(t_ssl *ssl, size_t length, uint8_t *line)
 {
 	int i;
@@ -115,14 +127,7 @@ int					sha256(t_ssl *ssl, size_t length, uint8_t *line)
 		j = 0;
 		while (j < 64)
 			sha256_loop(ssl, j++);
-		ssl->a0 += ssl->a;
-		ssl->b0 += ssl->b;
-		ssl->c0 += ssl->c;
-		ssl->d0 += ssl->d;
-		ssl->e0 += ssl->e;
-		ssl->f0 += ssl->f;
-		ssl->g0 += ssl->g;
-		ssl->h0 += ssl->h;
+		sha256_swap(ssl);
 		free(ssl->m);
 		i++;
 	}
