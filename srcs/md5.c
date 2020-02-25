@@ -73,7 +73,7 @@ static void			md5_loop(t_ssl *ssl, int i)
 	md5_swap(ssl, i);
 }
 
-static int			variables(unsigned char *line, size_t length, t_ssl *ssl)
+static int			variables(t_ssl *ssl, unsigned char *line, size_t length)
 {
 	ssl->a0 = 0x67452301;
 	ssl->b0 = 0xefcdab89;
@@ -96,7 +96,7 @@ int					md5(t_ssl *ssl, size_t length, uint8_t *line)
 {
 	int i;
 
-	if (variables(line, length, ssl) == -1)
+	if (variables(ssl, line, length) == -1)
 		return (-1);
 	while (ssl->chunk < ssl->len)
 	{

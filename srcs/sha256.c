@@ -76,7 +76,7 @@ static void			schedule(t_ssl *ssl, int i)
 	ssl->h = ssl->h0;
 }
 
-static int			variables(unsigned char *line, size_t length, t_ssl *ssl)
+static int			variables(t_ssl *ssl, unsigned char *line, size_t length)
 {
 	int i;
 
@@ -120,7 +120,8 @@ int					sha256(t_ssl *ssl, size_t length, uint8_t *line)
 	int j;
 
 	i = 0;
-	variables(line, length, ssl);
+	if (variables(ssl, line, length) == -1)
+		return (-1);
 	while (i < ssl->chunk)
 	{
 		schedule(ssl, i);
