@@ -79,15 +79,15 @@ static int			variables(t_ssl *ssl, unsigned char *line, size_t length)
 	ssl->b0 = 0xefcdab89;
 	ssl->c0 = 0x98badcfe;
 	ssl->d0 = 0x10325476;
-	ssl->len = length + 1;
-	while (ssl->len % 64 != 56)
-		ssl->len++;
-	if (!(ssl->padded_message = malloc(ssl->len + 64)))
+	ssl->len_bit = length + 1;
+	while (ssl->len_bit % 64 != 56)
+		ssl->len_bit++;
+	if (!(ssl->padded_message = malloc(ssl->len_bit + 64)))
 		return (-1);
-	ft_bzero(ssl->padded_message, ssl->len + 64);
+	ft_bzero(ssl->padded_message, ssl->len_bit + 64);
 	ft_strcpy((char *)ssl->padded_message, (const char *)line);
 	*(uint32_t *)(ssl->padded_message + length) = 0x80;
-	*(uint32_t *)(ssl->padded_message + ssl->len) = (uint32_t)(8 * length);
+	*(uint32_t *)(ssl->padded_message + ssl->len_bit) = (uint32_t)(8 * length);
 	ssl->chunk = 0;
 	return (0);
 }
@@ -98,7 +98,7 @@ int					md5(t_ssl *ssl, size_t length, uint8_t *line)
 
 	if (variables(ssl, line, length) == -1)
 		return (-1);
-	while (ssl->chunk < ssl->len)
+	while (ssl->chunk < ssl->len_bit)
 	{
 		ssl->m = (uint32_t *)(ssl->padded_message + ssl->chunk);
 		ssl->a = ssl->a0;

@@ -62,7 +62,7 @@ typedef struct		s_ssl
 	uint32_t		tmp;
 	uint32_t		tmp2;
 	uint32_t		*msg_32;
-	size_t			len;
+	size_t			len_bit;
 	int				chunk;
 	unsigned char	*padded_message;
 	int				origin;

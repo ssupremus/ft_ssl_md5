@@ -88,8 +88,8 @@ static int			variables(t_ssl *ssl, unsigned char *line, size_t length)
 	ssl->f0 = 0x9b05688c;
 	ssl->g0 = 0x1f83d9ab;
 	ssl->h0 = 0x5be0cd19;
-	ssl->len = length * 8;
-	ssl->chunk = 1 + ((ssl->len + 16 + 64) / 512);
+	ssl->len_bit = length * 8;
+	ssl->chunk = 1 + ((ssl->len_bit + 16 + 64) / 512);
 	if (!(ssl->msg_32 = malloc(16 * ssl->chunk * 4)))
 		return (-1);
 	ft_bzero(ssl->msg_32, 16 * ssl->chunk * 4);
@@ -98,7 +98,7 @@ static int			variables(t_ssl *ssl, unsigned char *line, size_t length)
 	i = -1;
 	while (++i < (ssl->chunk * 16) - 1)
 		ssl->msg_32[i] = R(ssl->msg_32[i]);
-	ssl->msg_32[((ssl->chunk * 512 - 64) / 32) + 1] = ssl->len;
+	ssl->msg_32[((ssl->chunk * 512 - 64) / 32) + 1] = ssl->len_bit;
 	return (0);
 }
 
