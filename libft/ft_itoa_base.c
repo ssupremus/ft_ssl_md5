@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static int	ft_get_len(uint32_t n, int base)
+static int	number_length(uint32_t n, int base)
 {
 	int i;
 
@@ -25,44 +25,37 @@ static int	ft_get_len(uint32_t n, int base)
 	return (i);
 }
 
-static char	*init(int *i)
-{
-	char *cmp;
-
-	cmp = "0123456789abcdef";
-	i[0] = 0;
-	return (cmp);
-}
-
 static char	*free_str(char *str)
 {
 	char *tmp;
 
 	tmp = str;
 	str = ft_strsub(str, 1, ft_strlen(str) - 1);
-	free(tmp);
+	ft_strdel(&tmp);
 	return (str);
 }
 
 char		*ft_itoa_base(uint32_t n, int base)
 {
 	int		i;
-	int		len;
+	int		length;
 	char	*str;
-	char	*cmp;
+	char	*chars;
 
-	cmp = init(&i);
-	len = ft_get_len(n, base);
+	i = 0;
+	chars = "0123456789abcdef";
+	length = number_length(n, base);
 	if (n == 0)
 		return (ft_strdup("0"));
-	if (!(str = (char *)malloc(sizeof(char) * (len + 1))))
+	str = (char *)malloc(sizeof(char) * (length + 1));
+	if (str == NULL)
 		return (NULL);
-	str[len + 1] = 0;
-	while (len + 1)
+	str[length + 1] = 0;
+	while (length + 1)
 	{
-		str[len] = cmp[n % base];
+		str[length] = chars[n % base];
 		n = n / base;
-		len--;
+		length--;
 	}
 	if (str[0] == '0')
 		str = free_str(str);
