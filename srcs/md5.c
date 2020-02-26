@@ -98,7 +98,7 @@ int					md5(t_ssl *ssl, size_t length, uint8_t *line)
 
 	if (variables(ssl, line, length) == -1)
 		return (-1);
-	while (ssl->chunk < ssl->len_bit)
+	while ((size_t)ssl->chunk < ssl->len_bit)
 	{
 		ssl->m = (uint32_t *)(ssl->padded_message + ssl->chunk);
 		ssl->a = ssl->a0;

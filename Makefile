@@ -33,6 +33,9 @@ $(NAME):	$(LIB) $(OBJS)
 $(LIB):
 	@make -C libft/
 
+$(OBJS):	%.o: %.c
+	clang $(FLAG) -I $(HEAD) -c $< -o $@
+
 clean:
 	@make -C libft clean
 	@rm -f $(OBJS)
