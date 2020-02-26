@@ -58,7 +58,7 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 	fd = open(ssl->file_name, O_RDONLY);
 	if (fd != -1)
 	{
-		if (get_next_line(fd, &line) == -1)
+		if (reading(fd, &line) == -1)
 			read_error(ssl->file_name, args[1]);
 		else
 		{
