@@ -27,6 +27,14 @@
 # define R(n) ((n >> 24)|((n & 0xff0000) >> 8)|((n & 0xff00) << 8)|(n << 24))
 # define LEFT(x, c) (((x) << (c)) | ((x) >> (32 - (c))))
 # define RIGHT(x, y) ((x >> y) | (x << (32 - y)))
+# define SHR(x,n) (x >> n)
+# define ROTR(x,n) (SHR(x,n) | (x << (64 - n)))
+# define S0(x) (ROTR(x, 1) ^ ROTR(x, 8) ^  SHR(x, 7))
+# define S1(x) (ROTR(x,19) ^ ROTR(x,61) ^  SHR(x, 6))
+# define S2(x) (ROTR(x,28) ^ ROTR(x,34) ^ ROTR(x,39))
+# define S3(x) (ROTR(x,14) ^ ROTR(x,18) ^ ROTR(x,41))
+# define F0(x,y,z) ((x & y) | (z & (x | y)))
+# define F1(x,y,z) (z ^ (x & (y ^ z)))
 
 typedef struct		s_flag
 {
@@ -63,17 +71,11 @@ typedef struct		s_ssl
 	uint32_t		tmp;
 	uint32_t		tmp2;
 	uint32_t		*msg_32;
-	uint64_t		a1;
-	uint64_t		b1;
-	uint64_t		c1;
-	uint64_t		d1;
-	uint64_t		e1;
-	uint64_t		f1;
-	uint64_t		g1;
-	uint64_t		h1;
+	uint64_t		hh[8];
 	uint64_t		state[8];
 	uint64_t		total[2];
 	unsigned char	buffer[128];
+	uint64_t		w[80];
 	uint64_t		*msg_64;
 	size_t			len_bit;
 	int				chunk;
@@ -88,7 +90,8 @@ void				string_error(char *hash);
 void				read_error(char *file_name, char *hash);
 void				processing(t_ssl *ssl, int argc, char **args);
 void				flags(t_ssl *ssl, int argc, char **argv);
-uint32_t			reverse_number(uint32_t n);
+void				print_left(t_ssl *ssl, char *hash);
+void 				print_right(t_ssl *ssl);
 int					md5(t_ssl *ssl, size_t length, uint8_t *line);
 void				print_md5(t_ssl *ssl);
 void				print_sha256(t_ssl *ssl);

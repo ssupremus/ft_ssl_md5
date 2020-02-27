@@ -54,6 +54,7 @@ void	error(char *arg)
 	ft_putendl("\nMessage Digest commands:");
 	ft_putendl("md5");
 	ft_putendl("sha256");
+	ft_putendl("sha512");
 	ft_putendl("\nCipher commands:");
 	ft_putendl("-p, echo STDIN to STDOUT and append the checksum to STDOUT");
 	ft_putendl("-q, quiet mode");

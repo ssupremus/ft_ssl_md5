@@ -25,20 +25,7 @@ static void	print_block(uint32_t block)
 	ft_strdel(&buffer);
 }
 
-static void print_block64(uint64_t block)
-{
-	int		i;
-	char	*buffer;
-
-	buffer = uint64_itoa_base(block, 16);
-	i = ft_strlen(buffer) - 1;
-	while (++i < 16)
-		ft_putchar('0');
-	ft_putstr(buffer);
-	ft_strdel(&buffer);
-}
-
-static void	print_left(t_ssl *ssl, char *hash)
+void 		print_left(t_ssl *ssl, char *hash)
 {
 	if (ssl->origin == STRING)
 	{
@@ -56,7 +43,7 @@ static void	print_left(t_ssl *ssl, char *hash)
 	}
 }
 
-static void	print_right(t_ssl *ssl)
+void 		print_right(t_ssl *ssl)
 {
 	if (ssl->origin == STRING)
 	{
@@ -100,25 +87,6 @@ void		print_sha256(t_ssl *ssl)
 	print_block(ssl->f0);
 	print_block(ssl->g0);
 	print_block(ssl->h0);
-	if (ssl->flags.r && !ssl->flags.q)
-		print_right(ssl);
-	ft_putchar('\n');
-}
-
-void		print_sha512(t_ssl *ssl)
-{
-	if (ssl->flags.p && ssl->origin == STDIN)
-		ft_putstr(ssl->line);
-	if (!ssl->flags.r && !ssl->flags.q)
-		print_left(ssl, "SHA512");
-	print_block64(ssl->state[0]);
-	print_block64(ssl->state[1]);
-	print_block64(ssl->state[2]);
-	print_block64(ssl->state[3]);
-	print_block64(ssl->state[4]);
-	print_block64(ssl->state[5]);
-	print_block64(ssl->state[6]);
-	print_block64(ssl->state[7]);
 	if (ssl->flags.r && !ssl->flags.q)
 		print_right(ssl);
 	ft_putchar('\n');

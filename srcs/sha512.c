@@ -1,241 +1,197 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sha512.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/04/25 12:06:20 by ysushkov          #+#    #+#             */
+/*   Updated: 2020/02/24 20:11:20 by ysushkov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_ssl.h"
-
-#if defined(_MSC_VER) || defined(__WATCOMC__)
-#define UL64(x) x##ui64
-#else
-#define UL64(x) x##ULL
-#endif
-
-#define  SHR(x,n) (x >> n)
-#define ROTR(x,n) (SHR(x,n) | (x << (64 - n)))
-
-#define S0(x) (ROTR(x, 1) ^ ROTR(x, 8) ^  SHR(x, 7))
-#define S1(x) (ROTR(x,19) ^ ROTR(x,61) ^  SHR(x, 6))
-
-#define S2(x) (ROTR(x,28) ^ ROTR(x,34) ^ ROTR(x,39))
-#define S3(x) (ROTR(x,14) ^ ROTR(x,18) ^ ROTR(x,41))
-
-#define F0(x,y,z) ((x & y) | (z & (x | y)))
-#define F1(x,y,z) (z ^ (x & (y ^ z)))
-
-#define GET_UINT64_BE(n,b,i)                            \
-{                                                       \
-    (n) = ( (uint64_t) (b)[(i)    ] << 56 )       \
-        | ( (uint64_t) (b)[(i) + 1] << 48 )       \
-        | ( (uint64_t) (b)[(i) + 2] << 40 )       \
-        | ( (uint64_t) (b)[(i) + 3] << 32 )       \
-        | ( (uint64_t) (b)[(i) + 4] << 24 )       \
-        | ( (uint64_t) (b)[(i) + 5] << 16 )       \
-        | ( (uint64_t) (b)[(i) + 6] <<  8 )       \
-        | ( (uint64_t) (b)[(i) + 7]       );      \
-}
-
-#define PUT_UINT64_BE(n, b, i)                 \
-  {                                            \
-    (b)[(i)] = (unsigned char)((n) >> 56);     \
-    (b)[(i) + 1] = (unsigned char)((n) >> 48); \
-    (b)[(i) + 2] = (unsigned char)((n) >> 40); \
-    (b)[(i) + 3] = (unsigned char)((n) >> 32); \
-    (b)[(i) + 4] = (unsigned char)((n) >> 24); \
-    (b)[(i) + 5] = (unsigned char)((n) >> 16); \
-    (b)[(i) + 6] = (unsigned char)((n) >> 8);  \
-    (b)[(i) + 7] = (unsigned char)((n));       \
-  }
 
 static uint64_t        g_k[] =
 {
-    UL64(0x428A2F98D728AE22), UL64(0x7137449123EF65CD),
-    UL64(0xB5C0FBCFEC4D3B2F), UL64(0xE9B5DBA58189DBBC),
-    UL64(0x3956C25BF348B538), UL64(0x59F111F1B605D019),
-    UL64(0x923F82A4AF194F9B), UL64(0xAB1C5ED5DA6D8118),
-    UL64(0xD807AA98A3030242), UL64(0x12835B0145706FBE),
-    UL64(0x243185BE4EE4B28C), UL64(0x550C7DC3D5FFB4E2),
-    UL64(0x72BE5D74F27B896F), UL64(0x80DEB1FE3B1696B1),
-    UL64(0x9BDC06A725C71235), UL64(0xC19BF174CF692694),
-    UL64(0xE49B69C19EF14AD2), UL64(0xEFBE4786384F25E3),
-    UL64(0x0FC19DC68B8CD5B5), UL64(0x240CA1CC77AC9C65),
-    UL64(0x2DE92C6F592B0275), UL64(0x4A7484AA6EA6E483),
-    UL64(0x5CB0A9DCBD41FBD4), UL64(0x76F988DA831153B5),
-    UL64(0x983E5152EE66DFAB), UL64(0xA831C66D2DB43210),
-    UL64(0xB00327C898FB213F), UL64(0xBF597FC7BEEF0EE4),
-    UL64(0xC6E00BF33DA88FC2), UL64(0xD5A79147930AA725),
-    UL64(0x06CA6351E003826F), UL64(0x142929670A0E6E70),
-    UL64(0x27B70A8546D22FFC), UL64(0x2E1B21385C26C926),
-    UL64(0x4D2C6DFC5AC42AED), UL64(0x53380D139D95B3DF),
-    UL64(0x650A73548BAF63DE), UL64(0x766A0ABB3C77B2A8),
-    UL64(0x81C2C92E47EDAEE6), UL64(0x92722C851482353B),
-    UL64(0xA2BFE8A14CF10364), UL64(0xA81A664BBC423001),
-    UL64(0xC24B8B70D0F89791), UL64(0xC76C51A30654BE30),
-    UL64(0xD192E819D6EF5218), UL64(0xD69906245565A910),
-    UL64(0xF40E35855771202A), UL64(0x106AA07032BBD1B8),
-    UL64(0x19A4C116B8D2D0C8), UL64(0x1E376C085141AB53),
-    UL64(0x2748774CDF8EEB99), UL64(0x34B0BCB5E19B48A8),
-    UL64(0x391C0CB3C5C95A63), UL64(0x4ED8AA4AE3418ACB),
-    UL64(0x5B9CCA4F7763E373), UL64(0x682E6FF3D6B2B8A3),
-    UL64(0x748F82EE5DEFB2FC), UL64(0x78A5636F43172F60),
-    UL64(0x84C87814A1F0AB72), UL64(0x8CC702081A6439EC),
-    UL64(0x90BEFFFA23631E28), UL64(0xA4506CEBDE82BDE9),
-    UL64(0xBEF9A3F7B2C67915), UL64(0xC67178F2E372532B),
-    UL64(0xCA273ECEEA26619C), UL64(0xD186B8C721C0C207),
-    UL64(0xEADA7DD6CDE0EB1E), UL64(0xF57D4F7FEE6ED178),
-    UL64(0x06F067AA72176FBA), UL64(0x0A637DC5A2C898A6),
-    UL64(0x113F9804BEF90DAE), UL64(0x1B710B35131C471B),
-    UL64(0x28DB77F523047D84), UL64(0x32CAAB7B40C72493),
-    UL64(0x3C9EBE0A15C9BEBC), UL64(0x431D67C49C100D4C),
-    UL64(0x4CC5D4BECB3E42B6), UL64(0x597F299CFC657E2A),
-    UL64(0x5FCB6FAB3AD6FAEC), UL64(0x6C44198C4A475817)
+    0x428a2f98d728ae22, 0x7137449123ef65cd,
+    0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
+    0x3956c25bf348b538, 0x59f111f1b605d019,
+    0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
+    0xd807aa98a3030242, 0x12835b0145706fbe,
+    0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
+    0x72be5d74f27b896f, 0x80deb1fe3b1696b1,
+    0x9bdc06a725c71235, 0xc19bf174cf692694,
+    0xe49b69c19ef14ad2, 0xefbe4786384f25e3,
+    0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65,
+    0x2de92c6f592b0275, 0x4a7484aa6ea6e483,
+    0x5cb0a9dcbd41fbd4, 0x76f988da831153b5,
+    0x983e5152ee66dfab, 0xa831c66d2db43210,
+    0xb00327c898fb213f, 0xbf597fc7beef0ee4,
+    0xc6e00bf33da88fc2, 0xd5a79147930aa725,
+    0x06ca6351e003826f, 0x142929670a0e6e70,
+    0x27b70a8546d22ffc, 0x2e1b21385c26c926,
+    0x4d2c6dfc5ac42aed, 0x53380d139d95b3df,
+    0x650a73548baf63de, 0x766a0abb3c77b2a8,
+    0x81c2c92e47edaee6, 0x92722c851482353b,
+    0xa2bfe8a14cf10364, 0xa81a664bbc423001,
+    0xc24b8b70d0f89791, 0xc76c51a30654be30,
+    0xd192e819d6ef5218, 0xd69906245565a910,
+    0xf40e35855771202a, 0x106aa07032bbd1b8,
+    0x19a4c116b8d2d0c8, 0x1e376c085141ab53,
+    0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8,
+    0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb,
+    0x5b9cca4f7763e373, 0x682e6ff3d6b2b8a3,
+    0x748f82ee5defb2fc, 0x78a5636f43172f60,
+    0x84c87814a1f0ab72, 0x8cc702081a6439ec,
+    0x90befffa23631e28, 0xa4506cebde82bde9,
+    0xbef9a3f7b2c67915, 0xc67178f2e372532b,
+    0xca273eceea26619c, 0xd186b8c721c0c207,
+    0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178,
+    0x06f067aa72176fba, 0x0a637dc5a2c898a6,
+    0x113f9804bef90dae, 0x1b710b35131c471b,
+    0x28db77f523047d84, 0x32caab7b40c72493,
+    0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
+    0x4cc5d4becb3e42b6, 0x597f299cfc657e2a,
+    0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
 
-#define P(a, b, c, d, e, f, g, h, x, K)      \
-  {                                          \
-    temp1 = h + S3(e) + F1(e, f, g) + K + x; \
-    temp2 = S2(a) + F0(a, b, c);             \
-    d += temp1;                              \
-    h = temp1 + temp2;                       \
-  }
-
-
-static void mbedtls_sha512_process(t_ssl *ssl, const unsigned char data[128])
+void    get_uint64_be(uint64_t *n, const unsigned char *b, int i)
 {
-  int i;
-  uint64_t temp1, temp2, W[80];
-  uint64_t A, B, C, D, E, F, G, H;
-
-  for (i = 0; i < 16; i++) {
-    GET_UINT64_BE(W[i], data, i << 3);
-  }
-
-  for (; i < 80; i++) {
-    W[i] = S1(W[i - 2]) + W[i - 7] + S0(W[i - 15]) + W[i - 16];
-  }
-
-  A = ssl->state[0];
-  B = ssl->state[1];
-  C = ssl->state[2];
-  D = ssl->state[3];
-  E = ssl->state[4];
-  F = ssl->state[5];
-  G = ssl->state[6];
-  H = ssl->state[7];
-  i = 0;
-
-  do {
-    P(A, B, C, D, E, F, G, H, W[i], g_k[i]);
-    i++;
-    P(H, A, B, C, D, E, F, G, W[i], g_k[i]);
-    i++;
-    P(G, H, A, B, C, D, E, F, W[i], g_k[i]);
-    i++;
-    P(F, G, H, A, B, C, D, E, W[i], g_k[i]);
-    i++;
-    P(E, F, G, H, A, B, C, D, W[i], g_k[i]);
-    i++;
-    P(D, E, F, G, H, A, B, C, W[i], g_k[i]);
-    i++;
-    P(C, D, E, F, G, H, A, B, W[i], g_k[i]);
-    i++;
-    P(B, C, D, E, F, G, H, A, W[i], g_k[i]);
-    i++;
-  } while (i < 80);
-
-  ssl->state[0] += A;
-  ssl->state[1] += B;
-  ssl->state[2] += C;
-  ssl->state[3] += D;
-  ssl->state[4] += E;
-  ssl->state[5] += F;
-  ssl->state[6] += G;
-  ssl->state[7] += H;
+    *n = ((uint64_t)(b)[(i)] << 56) | \
+        ((uint64_t)(b)[(i) + 1] << 48) | \
+        ((uint64_t)(b)[(i) + 2] << 40) | \
+        ((uint64_t)(b)[(i) + 3] << 32) | \
+        ((uint64_t)(b)[(i) + 4] << 24) | \
+        ((uint64_t)(b)[(i) + 5] << 16) | \
+        ((uint64_t)(b)[(i) + 6] << 8) | \
+        ((uint64_t)(b)[(i) + 7]);
 }
 
-static void mbedtls_sha512_update(t_ssl *ssl, const unsigned char *input, size_t ilen)
+void     put_uint64_be(uint64_t n, unsigned char *b, int i)
 {
-  size_t fill;
-  unsigned int left;
-
-  if (ilen == 0) return;
-
-  left = (unsigned int)(ssl->total[0] & 0x7F);
-  fill = 128 - left;
-
-  ssl->total[0] += (uint64_t)ilen;
-
-  if (ssl->total[0] < (uint64_t)ilen) ssl->total[1]++;
-
-  if (left && ilen >= fill) {
-    ft_memcpy((void *)(ssl->buffer + left), input, fill);
-    mbedtls_sha512_process(ssl, ssl->buffer);
-    input += fill;
-    ilen -= fill;
-    left = 0;
-  }
-
-  while (ilen >= 128) {
-    mbedtls_sha512_process(ssl, input);
-    input += 128;
-    ilen -= 128;
-  }
-
-  if (ilen > 0)
-    ft_memcpy((void *)(ssl->buffer + left), input, ilen);
+    (b)[(i)] = (unsigned char)((n) >> 56);
+    (b)[(i) + 1] = (unsigned char)((n) >> 48);
+    (b)[(i) + 2] = (unsigned char)((n) >> 40);
+    (b)[(i) + 3] = (unsigned char)((n) >> 32);
+    (b)[(i) + 4] = (unsigned char)((n) >> 24);
+    (b)[(i) + 5] = (unsigned char)((n) >> 16);
+    (b)[(i) + 6] = (unsigned char)((n) >> 8);
+    (b)[(i) + 7] = (unsigned char)((n));
 }
 
-static void mbedtls_sha512_starts(t_ssl *ssl) {
-  ssl->total[0] = 0;
-  ssl->total[1] = 0;
+static void sha512_swap(t_ssl *ssl, int i)
+{
+    int mem;
+    int k;
+    int j;
+    int m[8];
+    uint64_t temp1;
+    uint64_t temp2;
 
-  ssl->state[0] = UL64(0x6A09E667F3BCC908);
-  ssl->state[1] = UL64(0xBB67AE8584CAA73B);
-  ssl->state[2] = UL64(0x3C6EF372FE94F82B);
-  ssl->state[3] = UL64(0xA54FF53A5F1D36F1);
-  ssl->state[4] = UL64(0x510E527FADE682D1);
-  ssl->state[5] = UL64(0x9B05688C2B3E6C1F);
-  ssl->state[6] = UL64(0x1F83D9ABFB41BD6B);
-  ssl->state[7] = UL64(0x5BE0CD19137E2179);
+    k = 0;
+    mem = 8 - (i % 8);
+    j = mem;
+    while (j < 8)
+        m[k++] = j++;
+    if (mem != 0)
+    {
+        j = 0;
+        while (j < mem)
+            m[k++] = j++;
+    }
+    temp1 = ssl->hh[m[7]] + S3(ssl->hh[m[4]]) + F1(ssl->hh[m[4]], ssl->hh[m[5]], ssl->hh[m[6]]) + g_k[i] + ssl->w[i];
+    temp2 = S2(ssl->hh[m[0]]) + F0(ssl->hh[m[0]], ssl->hh[m[1]], ssl->hh[m[2]]);
+    ssl->hh[m[3]] += temp1;
+    ssl->hh[m[7]] = temp1 + temp2;
 }
 
-static const unsigned char sha512_padding[128] = {
-    0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0,    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0,    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0,    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0,    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0,    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+static void sha512_process(t_ssl *ssl, const unsigned char data[128])
+{
+    int i;
 
-static void mbedtls_sha512_finish(t_ssl *ssl, unsigned char output[64]) {
-  size_t last, padn;
-  uint64_t high, low;
-  unsigned char msglen[16];
+    i = -1;
+    while (++i < 16)
+        get_uint64_be(&ssl->w[i], data, i << 3);
+    i = 15;
+    while (++i < 80)
+        ssl->w[i] = S1(ssl->w[i - 2]) + ssl->w[i - 7] + S0(ssl->w[i - 15]) + ssl->w[i - 16];
+    i = -1;
+    while (++i < 8)
+        ssl->hh[i] = ssl->state[i];
+    i = 0;
+    while (i < 80)
+        sha512_swap(ssl, i++);
+    i = -1;
+    while (++i < 8)
+        ssl->state[i] += ssl->hh[i];
+}
 
-  high = (ssl->total[0] >> 61) | (ssl->total[1] << 3);
-  low = (ssl->total[0] << 3);
+static void sha512_update(t_ssl *ssl, const unsigned char *input, size_t length)
+{
+    unsigned int left;
 
-  PUT_UINT64_BE(high, msglen, 0);
-  PUT_UINT64_BE(low, msglen, 8);
+    if (length == 0)
+        return ;
+    left = (unsigned int)(ssl->total[0] & 0x7F);
+    ssl->len_bit = 128 - left;
+    ssl->total[0] += (uint64_t)length;
+    if (ssl->total[0] < (uint64_t)length)
+        ssl->total[1]++;
+    if (left && length >= ssl->len_bit)
+    {
+        ft_memcpy((void *)(ssl->buffer + left), input, ssl->len_bit);
+        sha512_process(ssl, ssl->buffer);
+        input += ssl->len_bit;
+        length -= ssl->len_bit;
+        left = 0;
+    }
+    while (length >= 128)
+    {
+        sha512_process(ssl, input);
+        input += 128;
+        length -= 128;
+    }
+    if (length > 0)
+        ft_memcpy((void *)(ssl->buffer + left), input, length);
+}
 
-  last = (size_t)(ssl->total[0] & 0x7F);
-  padn = (last < 112) ? (112 - last) : (240 - last);
-
-  mbedtls_sha512_update(ssl, sha512_padding, padn);
-  mbedtls_sha512_update(ssl, msglen, 16);
-
-  PUT_UINT64_BE(ssl->state[0], output, 0);
-  PUT_UINT64_BE(ssl->state[1], output, 8);
-  PUT_UINT64_BE(ssl->state[2], output, 16);
-  PUT_UINT64_BE(ssl->state[3], output, 24);
-  PUT_UINT64_BE(ssl->state[4], output, 32);
-  PUT_UINT64_BE(ssl->state[5], output, 40);
-  PUT_UINT64_BE(ssl->state[6], output, 48);
-  PUT_UINT64_BE(ssl->state[7], output, 56);
+static void sha512_finish(t_ssl *ssl)
+{
+    size_t      last;
+    size_t      padn;
+    uint64_t    high;
+    uint64_t    low;
+    
+    unsigned char msglen[16];
+    high = (ssl->total[0] >> 61) | (ssl->total[1] << 3);
+    low = (ssl->total[0] << 3);
+    put_uint64_be(high, msglen, 0);
+    put_uint64_be(low, msglen, 8);
+    last = (size_t)(ssl->total[0] & 0x7F);
+    padn = (last < 112) ? (112 - last) : (240 - last);
+    sha512_update(ssl, ssl->padded_message, padn);
+    sha512_update(ssl, msglen, 16);
 }
 
 int                 sha512(t_ssl *ssl, size_t length, uint8_t *line)
 {
-    uint8_t out[64];
-
-    mbedtls_sha512_starts(ssl);
-    mbedtls_sha512_update(ssl, line, length);
-    mbedtls_sha512_finish(ssl, out);
+    ssl->total[0] = 0;
+    ssl->total[1] = 0;
+    ssl->state[0] = 0x6a09e667f3bcc908;
+    ssl->state[1] = 0xbb67ae8584caa73b;
+    ssl->state[2] = 0x3c6ef372fe94f82b;
+    ssl->state[3] = 0xa54ff53a5f1d36f1;
+    ssl->state[4] = 0x510e527fade682d1;
+    ssl->state[5] = 0x9b05688c2b3e6c1f;
+    ssl->state[6] = 0x1f83d9abfb41bd6b;
+    ssl->state[7] = 0x5be0cd19137e2179;
+    ssl->padded_message = malloc(128);
+    ft_bzero(ssl->padded_message, 128);
+	ssl->padded_message[0] = 0x80;
+    sha512_update(ssl, line, length);
+    sha512_finish(ssl);
     print_sha512(ssl);
+    free(ssl->padded_message);
     return (0);
 }
