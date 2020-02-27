@@ -15,6 +15,7 @@
 
 # include "../libft/libft.h"
 # include <stdint.h>
+# include <errno.h>
 # include <sys/stat.h>
 # include <fcntl.h>
 
@@ -70,7 +71,7 @@ typedef struct		s_ssl
 
 void				usage(void);
 void				error(char *arg);
-void				no_such_file(char *file_name, char *hash);
+void				no_such_file(char *file_name, char *hash, int e);
 void				string_error(char *hash);
 void				read_error(char *file_name, char *hash);
 void				processing(t_ssl *ssl, int argc, char **args);
@@ -81,5 +82,7 @@ void				print_md5(t_ssl *ssl);
 void				print_sha256(t_ssl *ssl);
 int					sha256(t_ssl *ssl, size_t length, uint8_t *line);
 char				*reading(char *name, size_t length);
+size_t				file_length(char *name);
+int					file_exists(char *name);
 
 #endif

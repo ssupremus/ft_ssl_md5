@@ -40,50 +40,13 @@ void		flags(t_ssl *ssl, int argc, char **argv)
 	}
 }
 
-// static void	send_line(t_ssl *ssl, char **args)
-// {
-// 	if (ft_strcmp(args[1], "md5") == 0)
-// 		md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-// 	else if (ft_strcmp(args[1], "sha256") == 0)
-// 		sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-// }
-
-static size_t	file_length(char *name)
-{
-	int fd;
-	int ret;
-	int buf[2];
-	size_t length;
-
-	fd = open(name, O_RDONLY);
-	buf[1] = 0;
-	length = 0;
-	if (fd < 0)
-		return (-1);
-	while ((ret = read(fd, buf, 1)) > 0)
-		length++;
-	close(fd);
-	return (length);
-}
-
-static int	file_exists(char *name)
-{
-	int fd;
-
-	fd = open(name, O_RDONLY);
-	if (fd < 0)
-		return (-1);
-	close(fd);
-	return (1);
-}
-
 static void	read_file(t_ssl *ssl, char **args, int index)
 {
 	size_t	length;
-
+	int		err;
 	length = 0;
 	ssl->file_name = ft_strdup(args[index]);
-	if (file_exists(ssl->file_name))
+	if ((err = file_exists(ssl->file_name)) > 0)
 	{
 		length = file_length(ssl->file_name);
 		ssl->line = reading(ssl->file_name, length);
@@ -93,29 +56,10 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 			sha256(ssl, length, (uint8_t *)ssl->line);
 		ft_strdel(&ssl->line);
 	}
-	else
-		no_such_file(ssl->file_name, args[1]);
-		//no_such_file(ssl->file_name, args[1]);
-	//printf("%s", line);
-	//ft_strdel(&line);
-	//fd = open(ssl->file_name, O_RDONLY);
-	// if (fd != -1)
-	// {
-	// 	if (get_next_line(fd, &line) == -1)
-	// 		read_error(ssl->file_name, args[1]);
-	// 	else
-	// 	{
-	// 		ssl->line = ft_strdup(line);
-	// 		send_line(ssl, args);
-	// 		if (line != NULL)
-	// 		{
-	// 			ft_strdel(&line);
-	// 		}
-	// 	}
-	// 	close(fd);
-	// }
-	// else
-	// 	no_such_file(ssl->file_name, args[1]);
+	else if (err == -1 || err == -3)
+		no_such_file(ssl->file_name, args[1], err == -1 ? ENOENT : EACCES);
+	else if (err == -2)
+		read_error(ssl->file_name, args[1]);
 	ft_strdel(&ssl->file_name);
 }
 

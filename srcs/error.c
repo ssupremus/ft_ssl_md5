@@ -12,13 +12,16 @@
 
 #include "../includes/ft_ssl.h"
 
-void	no_such_file(char *file_name, char *hash)
+void	no_such_file(char *file_name, char *hash, int e)
 {
 	ft_putstr("ft_ssl: ");
 	ft_putstr(hash);
 	ft_putstr(": ");
 	ft_putstr(file_name);
-	ft_putendl(": No such file or directory");
+	if (e == EACCES)
+		ft_putendl(": Permission denied");
+	else
+		ft_putendl(": No such file or directory");
 }
 
 void	string_error(char *hash)

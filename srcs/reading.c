@@ -12,46 +12,44 @@
 
 #include "../includes/ft_ssl.h"
 
-// static int		find_breakpoint(char *buf, int ret)
-// {
-// 	int i;
+size_t	file_length(char *name)
+{
+	int fd;
+	int ret;
+	int buf[2];
+	size_t length;
 
-// 	i = 0;
-// 	while (buf[i])
-// 		i++;
-// 	if (i < ret)
-// 		return (-1);
-// 	return (1);
-// }
+	fd = open(name, O_RDONLY);
+	buf[1] = 0;
+	length = 0;
+	if (fd < 0)
+		return (-1);
+	while ((ret = read(fd, buf, 1)) > 0)
+		length++;
+	close(fd);
+	return (length);
+}
 
-// int				reading(int fd, char **line)
-// {
-// 	char	*str;
-// 	int		ret;
-// 	char	buf[8000000 + 1];
-// 	char	*temp;
+int	file_exists(char *name)
+{
+	int		fd;
+	char	*buf[2];
+	int		ret;
 
-// 	temp = NULL;
-// 	if (fd < 0 || fd > 4864)
-// 		return (-1);
-// 	str = malloc(1);
-// 	str[0] = 0;
-// 	while ((ret = read(fd, buf, 8000000)) > 0)
-// 	{
-// 		buf[ret] = 0;
-// 		temp = ft_strjoin(str, buf);
-// 		ft_strdel(&str);
-// 		str = ft_strdup(temp);
-// 		ft_strdel(&temp);
-// 		if (!find_breakpoint(buf, ret))
-// 			break ;
-// 	}
-// 	if (ret < 0)
-// 		return (-1);
-// 	*line = ft_strdup(str);
-// 	ft_strdel(&str);
-// 	return (1);
-// }
+	buf[1] = 0;
+	fd = open(name, O_RDONLY);
+	if (fd < 0)
+	{
+		if (errno == EACCES)
+			return (-3);
+		return (-1);
+	}
+	ret = read(fd, buf, 1); 
+	close(fd);
+	if (ret < 0)
+		return (-2);
+	return (fd);
+}
 
 char		*reading(char *name, size_t length)
 {
