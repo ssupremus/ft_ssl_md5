@@ -52,34 +52,25 @@
 // 	ft_strdel(&str);
 // 	return (1);
 // }
-#include <stdio.h>
-size_t				reading(int fd, char **line, char *name)
-{
-	size_t i;
-	char ch[1 + 1];
-	char *str;
-	int ret;
 
-	i = 0;
-	str = NULL;
-	ch[1] = 0;
-	while ((ret = read(fd, ch, 1)) > 0)
-		i++;
-	ft_putnbr((int)i);
-	ft_putendl("");
-	//if (ret < 0)
-		//return (0);
-	//*line = (char *)malloc(sizeof(char) * (i + 1));
-	close(fd);
-	*line = (char *)malloc(sizeof(char) * (i + 1));
-	*line[i] = 0;
-	i = 0;
+char		*reading(char *name, size_t length)
+{
+	int fd;
+	int ret;
+	int buf[2];
+	char *line;
+	int i;
+
 	fd = open(name, O_RDONLY);
-	ft_putnbr(fd);
-	ft_putendl("");
+	if (fd < 0)
+		return (NULL);
+	buf[1] = 0;
+	line = (char *)malloc(sizeof(char) * (length + 1));
+	if (line == NULL)
+		return (NULL);
+	line[length] = 0;
 	i = 0;
-	while ((ret = read(fd, ch, 1)) > 0)
-		*line[i++] = ch[0];
-	printf("%s\n", *line);
-	return (i);
+	ret = read(fd, line, length);
+	close(fd);
+	return (line);
 }

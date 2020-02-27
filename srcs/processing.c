@@ -66,46 +66,36 @@ static size_t	file_length(char *name)
 	return (length);
 }
 
-#include <stdio.h>
-
-char		*sieg_heil(char *name, size_t length)
+static int	file_exists(char *name)
 {
 	int fd;
-	int ret;
-	int buf[2];
-	char *line;
-	int i;
 
 	fd = open(name, O_RDONLY);
-	buf[1] = 0;
-	line = (char *)malloc(sizeof(char) * (length + 1));
-	if (line == NULL)
-		return (NULL);
-	line[length] = 0;
-	i = 0;
-	//while ((ret = read(fd, buf, 1)) > 0)
-//		line[i++] = buf[0];
-	ret = read(fd, line, length);
+	if (fd < 0)
+		return (-1);
 	close(fd);
-	return (line);
+	return (1);
 }
 
 static void	read_file(t_ssl *ssl, char **args, int index)
 {
-	//int		fd;
-	char	*line;
 	size_t	length;
 
-	line = NULL;
 	length = 0;
 	ssl->file_name = ft_strdup(args[index]);
-	length = file_length(ssl->file_name);
-	printf("%i\n", (int)length);
-	ssl->line = sieg_heil(ssl->file_name, length);
-	if (ft_strcmp("md5", args[1]) == 0)
-		md5(ssl, length, (uint8_t *)ssl->line);
+	if (file_exists(ssl->file_name))
+	{
+		length = file_length(ssl->file_name);
+		ssl->line = reading(ssl->file_name, length);
+		if (ft_strcmp("md5", args[1]) == 0)
+			md5(ssl, length, (uint8_t *)ssl->line);
+		else if ((ft_strcmp("sha256", args[1]) == 0))
+			sha256(ssl, length, (uint8_t *)ssl->line);
+		ft_strdel(&ssl->line);
+	}
 	else
-		sha256(ssl, length, (uint8_t *)ssl->line);
+		no_such_file(ssl->file_name, args[1]);
+		//no_such_file(ssl->file_name, args[1]);
 	//printf("%s", line);
 	//ft_strdel(&line);
 	//fd = open(ssl->file_name, O_RDONLY);
@@ -120,7 +110,6 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 	// 		if (line != NULL)
 	// 		{
 	// 			ft_strdel(&line);
-	ft_strdel(&ssl->line);
 	// 		}
 	// 	}
 	// 	close(fd);

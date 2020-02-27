@@ -100,7 +100,6 @@ static int			variables(t_ssl *ssl, unsigned char *line, size_t length)
 		return (-1);
 	ft_bzero(ssl->padded_message, ssl->len_bit + 64);
 	ft_strncpy2((char *)ssl->padded_message, (const char *)line, length);
-	ft_putendl((char*)ssl->padded_message);
 	*(uint32_t *)(ssl->padded_message + length) = 0x80;
 	*(uint32_t *)(ssl->padded_message + ssl->len_bit) = (uint32_t)(8 * length);
 	ssl->chunk = 0;

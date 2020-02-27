@@ -80,6 +80,6 @@ int					md5(t_ssl *ssl, size_t length, uint8_t *line);
 void				print_md5(t_ssl *ssl);
 void				print_sha256(t_ssl *ssl);
 int					sha256(t_ssl *ssl, size_t length, uint8_t *line);
-size_t				reading(int fd, char **line, char *name);
+char				*reading(char *name, size_t length);
 
 #endif
