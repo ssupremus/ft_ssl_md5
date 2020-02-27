@@ -40,40 +40,93 @@ void		flags(t_ssl *ssl, int argc, char **argv)
 	}
 }
 
-static void	send_line(t_ssl *ssl, char **args)
+// static void	send_line(t_ssl *ssl, char **args)
+// {
+// 	if (ft_strcmp(args[1], "md5") == 0)
+// 		md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+// 	else if (ft_strcmp(args[1], "sha256") == 0)
+// 		sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+// }
+
+static size_t	file_length(char *name)
 {
-	if (ft_strcmp(args[1], "md5") == 0)
-		md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-	else if (ft_strcmp(args[1], "sha256") == 0)
-		sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+	int fd;
+	int ret;
+	int buf[2];
+	size_t length;
+
+	fd = open(name, O_RDONLY);
+	buf[1] = 0;
+	length = 0;
+	if (fd < 0)
+		return (-1);
+	while ((ret = read(fd, buf, 1)) > 0)
+		length++;
+	close(fd);
+	return (length);
+}
+
+#include <stdio.h>
+
+char		*sieg_heil(char *name, size_t length)
+{
+	int fd;
+	int ret;
+	int buf[2];
+	char *line;
+	int i;
+
+	fd = open(name, O_RDONLY);
+	buf[1] = 0;
+	line = (char *)malloc(sizeof(char) * (length + 1));
+	if (line == NULL)
+		return (NULL);
+	line[length] = 0;
+	i = 0;
+	//while ((ret = read(fd, buf, 1)) > 0)
+//		line[i++] = buf[0];
+	ret = read(fd, line, length);
+	close(fd);
+	return (line);
 }
 
 static void	read_file(t_ssl *ssl, char **args, int index)
 {
-	int		fd;
+	//int		fd;
 	char	*line;
+	size_t	length;
 
 	line = NULL;
+	length = 0;
 	ssl->file_name = ft_strdup(args[index]);
-	fd = open(ssl->file_name, O_RDONLY);
-	if (fd != -1)
-	{
-		if (reading(fd, &line) == -1)
-			read_error(ssl->file_name, args[1]);
-		else
-		{
-			ssl->line = ft_strdup(line);
-			send_line(ssl, args);
-			if (line != NULL)
-			{
-				ft_strdel(&line);
-				ft_strdel(&ssl->line);
-			}
-		}
-		close(fd);
-	}
+	length = file_length(ssl->file_name);
+	printf("%i\n", (int)length);
+	ssl->line = sieg_heil(ssl->file_name, length);
+	if (ft_strcmp("md5", args[1]) == 0)
+		md5(ssl, length, (uint8_t *)ssl->line);
 	else
-		no_such_file(ssl->file_name, args[1]);
+		sha256(ssl, length, (uint8_t *)ssl->line);
+	//printf("%s", line);
+	//ft_strdel(&line);
+	//fd = open(ssl->file_name, O_RDONLY);
+	// if (fd != -1)
+	// {
+	// 	if (get_next_line(fd, &line) == -1)
+	// 		read_error(ssl->file_name, args[1]);
+	// 	else
+	// 	{
+	// 		ssl->line = ft_strdup(line);
+	// 		send_line(ssl, args);
+	// 		if (line != NULL)
+	// 		{
+	// 			ft_strdel(&line);
+	ft_strdel(&ssl->line);
+	// 		}
+	// 	}
+	// 	close(fd);
+	// }
+	// else
+	// 	no_such_file(ssl->file_name, args[1]);
 	ft_strdel(&ssl->file_name);
 }
 
