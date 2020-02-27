@@ -94,6 +94,7 @@ void				ft_swapuint(unsigned int *a, unsigned int *b);
 void				ft_swapdate(time_t *a, time_t *b);
 int					ft_strcasecmp(const char *a, const char *b);
 char				*ft_itoa_base(uint32_t value, int base);
+char				*uint64_itoa_base(uint64_t n, int base);
 int					get_next_line(const int fd, char **line);
 
 #endif

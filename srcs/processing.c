@@ -54,6 +54,8 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 			md5(ssl, length, (uint8_t *)ssl->line);
 		else if ((ft_strcmp("sha256", args[1]) == 0))
 			sha256(ssl, length, (uint8_t *)ssl->line);
+		else if (ft_strcmp(args[1], "sha512") == 0)
+			sha512(ssl, length, (uint8_t *)ssl->line);
 		ft_strdel(&ssl->line);
 	}
 	else if (err == -1 || err == -3)
@@ -78,9 +80,11 @@ static void	read_string(t_ssl *ssl, int argc, char **args)
 				md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 			else if (ft_strcmp(args[1], "sha256") == 0)
 				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+			else if (ft_strcmp(args[1], "sha512") == 0)
+				sha512(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 			ft_strdel(&ssl->line);
 		}
-		else if ((i + 1) == argc && ft_strcmp(args[i], "-s") == 0 &&
+		else if ((i + 1) == argc && ft_strcmp(args[i], "-s") == 0 && 
 				!ssl->file_index)
 			string_error(args[1]);
 	}
@@ -101,6 +105,8 @@ void		processing(t_ssl *ssl, int argc, char **args)
 			md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 		else if (ft_strcmp(args[1], "sha256") == 0)
 			sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+		else if (ft_strcmp(args[1], "sha512") == 0)
+			sha512(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
 		ft_strdel(&ssl->line);
 		ft_strdel(&line);
 	}

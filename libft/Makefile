@@ -24,7 +24,7 @@ SRC = ft_memset.c ft_bzero.c ft_memcpy.c ft_memccpy.c ft_memmove.c ft_memchr.c \
 	ft_lstnew.c ft_lstdelone.c ft_lstdel.c ft_lstadd.c ft_lstiter.c ft_lstmap.c \
 	ft_isupper.c ft_islower.c ft_ascii_sort.c ft_isodd.c ft_iseven.c \
 	ft_swapstr.c ft_swapuint.c ft_swapdate.c ft_strcasecmp.c get_next_line.c \
-	ft_itoa_base.c
+	ft_itoa_base.c uint64_itoa_base.c
 
 HEADER = libft.h
 

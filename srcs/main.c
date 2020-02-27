@@ -33,7 +33,8 @@ int			main(int argc, char **argv)
 	if (argc == 1)
 		usage();
 	else if (ft_strcmp(argv[1], "md5") == 0 ||
-			ft_strcmp(argv[1], "sha256") == 0)
+			ft_strcmp(argv[1], "sha256") == 0 ||
+			ft_strcmp(argv[1], "sha512") == 0)
 		processing(&ssl, argc, argv);
 	else
 		error(argv[1]);
