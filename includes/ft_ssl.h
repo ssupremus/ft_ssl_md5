@@ -46,6 +46,10 @@ typedef struct		s_flag
 
 typedef struct		s_ssl
 {
+	char			**stdin_args;
+	int				words;
+	char			*stdin_line;
+	char			*stdin_buf;
 	char			*line;
 	t_flag			flags;
 	int				string_index;
@@ -82,6 +86,7 @@ typedef struct		s_ssl
 	int				origin;
 }					t_ssl;
 
+void				initialize(t_ssl *ssl);
 void				usage(void);
 void				error(char *arg);
 void				no_such_file(char *file_name, char *hash, int e);
@@ -112,5 +117,7 @@ void				sha384512_swap(t_ssl *ssl, int i);
 void				sha384512_process(t_ssl *ssl, const unsigned char data[128]);
 void				sha384512_update(t_ssl *ssl, const unsigned char *input, size_t length);
 void				sha384512_finish(t_ssl *ssl);
+void				console(t_ssl *ssl);
+void    			clean_input(t_ssl *ssl, int argc);
 
 #endif

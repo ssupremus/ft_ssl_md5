@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_div.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,13 +12,13 @@
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-# define BUFF_SIZE 8000000
-# define DIV 0
+# define BUFF_SIZE 1024
 # include <unistd.h>
 # include <fcntl.h>
 # include <stdlib.h>
 # include "libft.h"
 
 int		get_next_line(const int fd, char **line);
+int		get_next_line_div(const int fd, char **line, char div);
 
 #endif

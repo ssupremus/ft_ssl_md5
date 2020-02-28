@@ -96,5 +96,6 @@ int					ft_strcasecmp(const char *a, const char *b);
 char				*ft_itoa_base(uint32_t value, int base);
 char				*uint64_itoa_base(uint64_t n, int base);
 int					get_next_line(const int fd, char **line);
+int					get_next_line_div(const int fd, char **line, char div);
 
 #endif

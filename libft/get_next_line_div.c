@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_div.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -25,7 +25,19 @@ static char		*ft_glue(char const *s1, char const *s2)
 	return (dst);
 }
 
-static char		*redding(const int fd, char **str)
+static int		find_breakpoint(char *buf, int ret, char div)
+{
+	int i;
+
+	i = 0;
+	while (buf[i] != div && buf[i] != 0)
+		i++;
+	if (i < ret)
+		return (-1);
+	return (1);
+}
+
+static char		*redding(const int fd, char **str, char div)
 {
 	int				ret;
 	char			*temp;
@@ -40,7 +52,7 @@ static char		*redding(const int fd, char **str)
 		ft_strdel(str);
 		*str = ft_strdup(temp);
 		ft_strdel(&temp);
-		if (strchr(buf, 10))
+		if (!find_breakpoint(buf, ret, div))
 			break ;
 	}
 	if (ret < 0)
@@ -71,7 +83,7 @@ static int		ft_check(const int *fd, char **line, char **str)
 	return (1);
 }
 
-int				get_next_line(const int fd, char **line)
+int				get_next_line_div(const int fd, char **line, char div)
 {
 	static char		*str = NULL;
 	size_t			r;
@@ -81,19 +93,19 @@ int				get_next_line(const int fd, char **line)
 	r = 0;
 	if (!(ft_check(&fd, line, &str)))
 		return (-1);
-	if ((!(str = redding(fd, &str))))
+	if ((!(str = redding(fd, &str, div))))
 		return (-1);
 	if (*(str + r) != 0)
 	{
-		while (*(str + r) != 10 && *(str + r) != 0)
+		while (*(str + r) != div && *(str + r) != 0)
 			r++;
 		*line = ft_strsub(str, 0, r);
-		if (*(str + r) == 10)
+		if (div != 0 && *(str + r) == div)
 			r++;
-		// temp = ft_strsub(str, r, (ft_strlen(str) - r));
+		temp = ft_strsub(str, r, (ft_strlen(str) - r));
 		ft_strdel(&str);
-		// str = ft_strdup(temp);
-		// ft_strdel(&temp);
+		str = ft_strdup(temp);
+		ft_strdel(&temp);
 		return (1);
 	}
 	return (0);
