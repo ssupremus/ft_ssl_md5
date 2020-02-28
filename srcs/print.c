@@ -73,12 +73,12 @@ void		print_md5(t_ssl *ssl)
 	ft_putchar('\n');
 }
 
-void		print_sha256(t_ssl *ssl)
+void		print_sha224256(t_ssl *ssl, char *hash)
 {
 	if (ssl->flags.p && ssl->origin == STDIN)
 		ft_putstr(ssl->line);
 	if (!ssl->flags.r && !ssl->flags.q)
-		print_left(ssl, "SHA256");
+		print_left(ssl, hash);
 	print_block(ssl->a0);
 	print_block(ssl->b0);
 	print_block(ssl->c0);
@@ -86,7 +86,8 @@ void		print_sha256(t_ssl *ssl)
 	print_block(ssl->e0);
 	print_block(ssl->f0);
 	print_block(ssl->g0);
-	print_block(ssl->h0);
+	if (ft_strcmp(hash, "SHA256") == 0)
+		print_block(ssl->h0);
 	if (ssl->flags.r && !ssl->flags.q)
 		print_right(ssl);
 	ft_putchar('\n');

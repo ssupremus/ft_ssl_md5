@@ -20,9 +20,10 @@ HEAD	:=	./includes
 
 LIB	:=	./libft/libft.a
 
-SRCS	:=	srcs/main.c srcs/md5.c srcs/sha256.c srcs/sha512.c \
+SRCS	:=	srcs/md5.c srcs/sha224.c srcs/sha256.c srcs/sha384.c srcs/sha512.c \
 			srcs/print.c srcs/print64.c srcs/error.c srcs/processing.c \
-			srcs/reading.c
+			srcs/reading.c srcs/sha224256_helper.c srcs/sha384512_helper.c \
+			srcs/main.c 
 
 OBJS	:=	$(SRCS:.c=.o)
 

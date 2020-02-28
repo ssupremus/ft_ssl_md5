@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sha256.c                                           :+:      :+:    :+:   */
+/*   sha224.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ysushkov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -16,14 +16,14 @@ static int	variables(t_ssl *ssl, unsigned char *line, size_t length)
 {
 	int i;
 
-	ssl->a0 = 0x6a09e667;
-	ssl->b0 = 0xbb67ae85;
-	ssl->c0 = 0x3c6ef372;
-	ssl->d0 = 0xa54ff53a;
-	ssl->e0 = 0x510e527f;
-	ssl->f0 = 0x9b05688c;
-	ssl->g0 = 0x1f83d9ab;
-	ssl->h0 = 0x5be0cd19;
+	ssl->a0 = 0xc1059ed8;
+	ssl->b0 = 0x367cd507;
+	ssl->c0 = 0x3070dd17;
+	ssl->d0 = 0xf70e5939;
+	ssl->e0 = 0xffc00b31;
+	ssl->f0 = 0x68581511;
+	ssl->g0 = 0x64f98fa7;
+	ssl->h0 = 0xbefa4fa4;
 	ssl->len_bit = length * 8;
 	ssl->chunk = 1 + ((ssl->len_bit + 16 + 64) / 512);
 	if (!(ssl->msg_32 = malloc(16 * ssl->chunk * 4)))
@@ -38,7 +38,7 @@ static int	variables(t_ssl *ssl, unsigned char *line, size_t length)
 	return (0);
 }
 
-int			sha256(t_ssl *ssl, size_t length, uint8_t *line)
+int			sha224(t_ssl *ssl, size_t length, uint8_t *line)
 {
 	int i;
 	int j;
@@ -56,7 +56,7 @@ int			sha256(t_ssl *ssl, size_t length, uint8_t *line)
 		free(ssl->m);
 		i++;
 	}
-	print_sha224256(ssl, "SHA256");
+	print_sha224256(ssl, "SHA224");
 	free(ssl->msg_32);
 	return (0);
 }

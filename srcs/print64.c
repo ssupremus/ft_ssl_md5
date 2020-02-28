@@ -13,16 +13,18 @@ static void print_block64(uint64_t block)
 	ft_strdel(&buffer);
 }
 
-void		print_sha512(t_ssl *ssl)
+void		print_sha384512(t_ssl *ssl, char *hash)
 {
 	int i;
+	int n;
 
 	i = 0;
+	n = ft_strcmp("SHA512", hash) == 0 ? 8 : 6;
 	if (ssl->flags.p && ssl->origin == STDIN)
 		ft_putstr(ssl->line);
 	if (!ssl->flags.r && !ssl->flags.q)
-		print_left(ssl, "SHA512");
-	while (i < 8)
+		print_left(ssl, hash);
+	while (i < n)
 		print_block64(ssl->state[i++]);
 	if (ssl->flags.r && !ssl->flags.q)
 		print_right(ssl);

@@ -40,6 +40,20 @@ void		flags(t_ssl *ssl, int argc, char **argv)
 	}
 }
 
+void		send_line_to_hash(t_ssl *ssl, size_t length, char *hash)
+{
+	if (ft_strcmp("md5", hash) == 0)
+		md5(ssl, length, (uint8_t *)ssl->line);
+	else if ((ft_strcmp("sha224", hash) == 0))
+		sha224(ssl, length, (uint8_t *)ssl->line);
+	else if ((ft_strcmp("sha256", hash) == 0))
+		sha256(ssl, length, (uint8_t *)ssl->line);
+	else if (ft_strcmp("sha384", hash) == 0)
+		sha384(ssl, length, (uint8_t *)ssl->line);
+	else if (ft_strcmp("sha512", hash) == 0)
+		sha512(ssl, length, (uint8_t *)ssl->line);
+}
+
 static void	read_file(t_ssl *ssl, char **args, int index)
 {
 	size_t	length;
@@ -50,12 +64,7 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 	{
 		length = file_length(ssl->file_name);
 		ssl->line = reading(ssl->file_name, length);
-		if (ft_strcmp("md5", args[1]) == 0)
-			md5(ssl, length, (uint8_t *)ssl->line);
-		else if ((ft_strcmp("sha256", args[1]) == 0))
-			sha256(ssl, length, (uint8_t *)ssl->line);
-		else if (ft_strcmp(args[1], "sha512") == 0)
-			sha512(ssl, length, (uint8_t *)ssl->line);
+		send_line_to_hash(ssl, length, args[1]);
 		ft_strdel(&ssl->line);
 	}
 	else if (err == -1 || err == -3)
@@ -76,12 +85,7 @@ static void	read_string(t_ssl *ssl, int argc, char **args)
 		if (i < ssl->string_index && ft_strcmp(args[i], "-s") == 0)
 		{
 			ssl->line = ft_strdup(args[i + 1]);
-			if (ft_strcmp(args[1], "md5") == 0)
-				md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-			else if (ft_strcmp(args[1], "sha256") == 0)
-				sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-			else if (ft_strcmp(args[1], "sha512") == 0)
-				sha512(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+			send_line_to_hash(ssl, ft_strlen(ssl->line), args[1]);
 			ft_strdel(&ssl->line);
 		}
 		else if ((i + 1) == argc && ft_strcmp(args[i], "-s") == 0 && 
@@ -101,12 +105,7 @@ void		processing(t_ssl *ssl, int argc, char **args)
 		ssl->origin = STDIN;
 		get_next_line(STDIN, &line);
 		ssl->line = ft_strdup(line);
-		if (ft_strcmp(args[1], "md5") == 0)
-			md5(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-		else if (ft_strcmp(args[1], "sha256") == 0)
-			sha256(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
-		else if (ft_strcmp(args[1], "sha512") == 0)
-			sha512(ssl, ft_strlen(ssl->line), (uint8_t *)ssl->line);
+		send_line_to_hash(ssl, ft_strlen(ssl->line), args[1]);
 		ft_strdel(&ssl->line);
 		ft_strdel(&line);
 	}
