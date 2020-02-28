@@ -56,30 +56,6 @@ static uint64_t        g_k[] =
 	0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
 
-void    get_uint64_be(uint64_t *n, const unsigned char *b, int i)
-{
-	*n = ((uint64_t)(b)[(i)] << 56) | \
-		((uint64_t)(b)[(i) + 1] << 48) | \
-		((uint64_t)(b)[(i) + 2] << 40) | \
-		((uint64_t)(b)[(i) + 3] << 32) | \
-		((uint64_t)(b)[(i) + 4] << 24) | \
-		((uint64_t)(b)[(i) + 5] << 16) | \
-		((uint64_t)(b)[(i) + 6] << 8) | \
-		((uint64_t)(b)[(i) + 7]);
-}
-
-void     put_uint64_be(uint64_t n, unsigned char *b, int i)
-{
-	(b)[(i)] = (unsigned char)((n) >> 56);
-	(b)[(i) + 1] = (unsigned char)((n) >> 48);
-	(b)[(i) + 2] = (unsigned char)((n) >> 40);
-	(b)[(i) + 3] = (unsigned char)((n) >> 32);
-	(b)[(i) + 4] = (unsigned char)((n) >> 24);
-	(b)[(i) + 5] = (unsigned char)((n) >> 16);
-	(b)[(i) + 6] = (unsigned char)((n) >> 8);
-	(b)[(i) + 7] = (unsigned char)((n));
-}
-
 void sha384512_swap(t_ssl *ssl, int i)
 {
 	int mem;

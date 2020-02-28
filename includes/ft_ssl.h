@@ -73,18 +73,10 @@ typedef struct		s_ssl
 	uint32_t		*msg_32;
 	uint64_t		hh[8];
 	uint64_t		state[8];
-	uint64_t		x[8];
-	uint64_t		k[8];
-	uint64_t		l[8];
 	uint64_t		total[2];
-	uint8_t			*digest;
 	unsigned char	buffer[128];
-	uint8_t			w_buffer[64];
 	uint64_t		w[80];
-	uint64_t		*msg_64;
 	size_t			len_bit;
-	size_t			size;
-	size_t			total_size;
 	int				chunk;
 	unsigned char	*padded_message;
 	int				origin;
