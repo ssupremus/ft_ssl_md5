@@ -60,6 +60,25 @@ static int     hash_recognized(char *hash)
     return (0);
 }
 
+static int		console_options(t_ssl *ssl)
+{
+	ssl->stdin_buf = ft_strjoin("ft_ssl ", ssl->stdin_line);
+	ssl->words = count_words(ssl->stdin_buf);
+	ssl->stdin_args = ft_strsplit(ssl->stdin_buf, ' ');
+	ft_strdel(&ssl->stdin_buf);
+	if (hash_recognized(ssl->stdin_args[1]) > 0)
+		processing(ssl, ssl->words, ssl->stdin_args);
+	else if (ft_strcmp(ssl->stdin_args[1], "exit") == 0)
+	{
+		clean_input(ssl, ssl->words);
+ 		return (-1);
+	}
+	else
+		error(ssl->stdin_args[1]);
+	clean_input(ssl, ssl->words);
+	return (1);
+}
+
 void	console(t_ssl *ssl)
 {
 	ft_putendl("Type 'exit' to quit");
@@ -73,20 +92,8 @@ void	console(t_ssl *ssl)
 		}
 		else
 		{
-			ssl->stdin_buf = ft_strjoin("ft_ssl ", ssl->stdin_line);
-			ssl->words = count_words(ssl->stdin_buf);
-			ssl->stdin_args = ft_strsplit(ssl->stdin_buf, ' ');
-			ft_strdel(&ssl->stdin_buf);
-			if (hash_recognized(ssl->stdin_args[1]) > 0)
-				processing(ssl, ssl->words, ssl->stdin_args);
-			else if (ft_strcmp(ssl->stdin_args[1], "exit") == 0)
-			{
-                clean_input(ssl, ssl->words);
-                break ;
-			}
-			else
-                error(ssl->stdin_args[1]);
-            clean_input(ssl, ssl->words);
+			if (console_options(ssl) == -1)
+				break ;
 		}
 		ft_strdel(&ssl->stdin_line);
     }
