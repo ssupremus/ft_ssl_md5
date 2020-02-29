@@ -73,6 +73,13 @@ static int		console_options(t_ssl *ssl)
 		clean_input(ssl, ssl->words);
  		return (-1);
 	}
+	else if (ft_strcmp(ssl->stdin_args[1], "help") == 0)
+	{
+		if (ssl->words == 2)
+			usage();
+		else
+			error(ssl->stdin_args[2]);
+	}
 	else
 		error(ssl->stdin_args[1]);
 	clean_input(ssl, ssl->words);
@@ -81,7 +88,7 @@ static int		console_options(t_ssl *ssl)
 
 void	console(t_ssl *ssl)
 {
-	ft_putendl("Type 'exit' to quit");
+	ft_putendl("Type 'exit' to quit or 'help' for help");
 	while (1)
 	{
 		ft_putstr("ft_ssl> ");
