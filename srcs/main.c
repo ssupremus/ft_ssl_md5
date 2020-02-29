@@ -35,11 +35,7 @@ int			main(int argc, char **argv)
 	initialize(&ssl);
 	if (argc == 1)
 		console(&ssl);
-	else if (ft_strcmp(argv[1], "md5") == 0 ||
-			ft_strcmp(argv[1], "sha224") == 0 ||
-			ft_strcmp(argv[1], "sha256") == 0 ||
-			ft_strcmp(argv[1], "sha384") == 0 ||
-			ft_strcmp(argv[1], "sha512") == 0)
+	else if (hash_recognized(argv[1]) > 0)
 		processing(&ssl, argc, argv);
 	else
 		error(argv[1]);

@@ -87,6 +87,7 @@ typedef struct		s_ssl
 }					t_ssl;
 
 void				initialize(t_ssl *ssl);
+int					hash_recognized(char *hash);
 void				usage(void);
 void				error(char *arg);
 void				no_such_file(char *file_name, char *hash, int e);

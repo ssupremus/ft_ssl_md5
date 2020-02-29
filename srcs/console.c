@@ -49,7 +49,7 @@ void    clean_input(t_ssl *ssl, int argc)
         ft_strdel(&ssl->stdin_buf);
 }
 
-static int     hash_recognized(char *hash)
+int		hash_recognized(char *hash)
 {
     if (ft_strcmp(hash, "md5") == 0 ||
 		ft_strcmp(hash, "sha224") == 0 ||
