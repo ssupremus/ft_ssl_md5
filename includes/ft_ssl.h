@@ -74,6 +74,8 @@ typedef struct		s_ssl
 	uint32_t		*m;
 	uint32_t		tmp;
 	uint32_t		tmp2;
+	uint64_t		temp1;
+	uint64_t		temp2;
 	uint32_t		*msg_32;
 	uint64_t		hh[8];
 	uint64_t		state[8];
@@ -96,7 +98,7 @@ void				read_error(char *file_name, char *hash);
 void				processing(t_ssl *ssl, int argc, char **args);
 void				flags(t_ssl *ssl, int argc, char **argv);
 void				print_left(t_ssl *ssl, char *hash);
-void 				print_right(t_ssl *ssl);
+void				print_right(t_ssl *ssl);
 int					md5(t_ssl *ssl, size_t length, uint8_t *line);
 void				print_md5(t_ssl *ssl);
 void				print_sha224256(t_ssl *ssl, char *hash);
@@ -104,21 +106,22 @@ void				print_sha384512(t_ssl *ssl, char *hash);
 void				print_whirlpool(t_ssl *ssl);
 int					sha224(t_ssl *ssl, size_t length, uint8_t *line);
 int					sha256(t_ssl *ssl, size_t length, uint8_t *line);
-int                 sha384(t_ssl *ssl, size_t length, uint8_t *line);
-int                 sha512(t_ssl *ssl, size_t length, uint8_t *line);
+int					sha384(t_ssl *ssl, size_t length, uint8_t *line);
+int					sha512(t_ssl *ssl, size_t length, uint8_t *line);
 char				*reading(char *name, size_t length);
 size_t				file_length(char *name);
 int					file_exists(char *name);
-void			    get_uint64_be(uint64_t *n, const unsigned char *b, int i);
-void     			put_uint64_be(uint64_t n, unsigned char *b, int i);
+void				get_uint64_be(uint64_t *n, const unsigned char *b, int i);
+void				put_uint64_be(uint64_t n, unsigned char *b, int i);
 void				sha224256_loop(t_ssl *ssl, int i);
 void				sha224256_schedule(t_ssl *ssl, int i);
 void				sha224256_swap(t_ssl *ssl);
 void				sha384512_swap(t_ssl *ssl, int i);
-void				sha384512_process(t_ssl *ssl, const unsigned char data[128]);
-void				sha384512_update(t_ssl *ssl, const unsigned char *input, size_t length);
+void				sha384512_process(t_ssl *ssl, unsigned char data[128]);
+void				sha384512_update(t_ssl *ssl,
+										unsigned char *input, size_t length);
 void				sha384512_finish(t_ssl *ssl);
 void				console(t_ssl *ssl);
-void    			clean_input(t_ssl *ssl, int argc);
+void				clean_input(t_ssl *ssl, int argc);
 
 #endif

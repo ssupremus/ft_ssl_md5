@@ -12,7 +12,7 @@
 
 #include "../includes/ft_ssl.h"
 
-int                 sha384(t_ssl *ssl, size_t length, uint8_t *line)
+int		sha384(t_ssl *ssl, size_t length, uint8_t *line)
 {
 	ssl->total[0] = 0;
 	ssl->total[1] = 0;

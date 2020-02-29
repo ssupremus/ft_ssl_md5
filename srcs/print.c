@@ -25,7 +25,7 @@ static void	print_block(uint32_t block)
 	ft_strdel(&buffer);
 }
 
-void 		print_left(t_ssl *ssl, char *hash)
+void		print_left(t_ssl *ssl, char *hash)
 {
 	if (ssl->origin == STRING)
 	{
@@ -43,7 +43,7 @@ void 		print_left(t_ssl *ssl, char *hash)
 	}
 }
 
-void 		print_right(t_ssl *ssl)
+void		print_right(t_ssl *ssl)
 {
 	if (ssl->origin == STRING)
 	{

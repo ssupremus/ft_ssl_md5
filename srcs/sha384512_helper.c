@@ -12,7 +12,7 @@
 
 #include "../includes/ft_ssl.h"
 
-static uint64_t        g_k[] =
+static uint64_t	g_k[] =
 {
 	0x428a2f98d728ae22, 0x7137449123ef65cd,
 	0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
@@ -56,14 +56,12 @@ static uint64_t        g_k[] =
 	0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
 
-void sha384512_swap(t_ssl *ssl, int i)
+void			sha384512_swap(t_ssl *ssl, int i)
 {
 	int mem;
 	int k;
 	int j;
 	int m[8];
-	uint64_t temp1;
-	uint64_t temp2;
 
 	k = 0;
 	mem = 8 - (i % 8);
@@ -74,15 +72,19 @@ void sha384512_swap(t_ssl *ssl, int i)
 	{
 		j = 0;
 		while (j < mem)
-		m[k++] = j++;
+			m[k++] = j++;
 	}
-	temp1 = ssl->hh[m[7]] + S3(ssl->hh[m[4]]) + F1(ssl->hh[m[4]], ssl->hh[m[5]], ssl->hh[m[6]]) + g_k[i] + ssl->w[i];
-	temp2 = S2(ssl->hh[m[0]]) + F0(ssl->hh[m[0]], ssl->hh[m[1]], ssl->hh[m[2]]);
-	ssl->hh[m[3]] += temp1;
-	ssl->hh[m[7]] = temp1 + temp2;
+	ssl->temp1 = ssl->hh[m[7]] +
+				S3(ssl->hh[m[4]]) +
+				F1(ssl->hh[m[4]], ssl->hh[m[5]], ssl->hh[m[6]]) +
+				g_k[i] + ssl->w[i];
+	ssl->temp2 = S2(ssl->hh[m[0]]) +
+				F0(ssl->hh[m[0]], ssl->hh[m[1]], ssl->hh[m[2]]);
+	ssl->hh[m[3]] += ssl->temp1;
+	ssl->hh[m[7]] = ssl->temp1 + ssl->temp2;
 }
 
-void sha384512_process(t_ssl *ssl, const unsigned char data[128])
+void			sha384512_process(t_ssl *ssl, unsigned char data[128])
 {
 	int i;
 
@@ -91,7 +93,8 @@ void sha384512_process(t_ssl *ssl, const unsigned char data[128])
 		get_uint64_be(&ssl->w[i], data, i << 3);
 	i = 15;
 	while (++i < 80)
-		ssl->w[i] = S1(ssl->w[i - 2]) + ssl->w[i - 7] + S0(ssl->w[i - 15]) + ssl->w[i - 16];
+		ssl->w[i] = S1(ssl->w[i - 2]) + ssl->w[i - 7] + S0(ssl->w[i - 15]) +
+		ssl->w[i - 16];
 	i = -1;
 	while (++i < 8)
 		ssl->hh[i] = ssl->state[i];
@@ -103,7 +106,8 @@ void sha384512_process(t_ssl *ssl, const unsigned char data[128])
 		ssl->state[i] += ssl->hh[i];
 }
 
-void sha384512_update(t_ssl *ssl, const unsigned char *input, size_t length)
+void			sha384512_update(t_ssl *ssl, unsigned char *input,
+											size_t length)
 {
 	unsigned int left;
 
@@ -132,14 +136,14 @@ void sha384512_update(t_ssl *ssl, const unsigned char *input, size_t length)
 		ft_memcpy((void *)(ssl->buffer + left), input, length);
 }
 
-void sha384512_finish(t_ssl *ssl)
+void			sha384512_finish(t_ssl *ssl)
 {
-	size_t      last;
-	size_t      padn;
-	uint64_t    high;
-	uint64_t    low;
+	size_t			last;
+	size_t			padn;
+	uint64_t		high;
+	uint64_t		low;
+	unsigned char	msglen[16];
 
-	unsigned char msglen[16];
 	high = (ssl->total[0] >> 61) | (ssl->total[1] << 3);
 	low = (ssl->total[0] << 3);
 	put_uint64_be(high, msglen, 0);

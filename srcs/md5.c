@@ -73,7 +73,7 @@ static void			md5_loop(t_ssl *ssl, int i)
 	md5_swap(ssl, i);
 }
 
-static char	*ft_strncpy2(char *dst, const char *src, size_t len)
+static char			*entirecpy(char *dst, const char *src, size_t len)
 {
 	size_t	i;
 
@@ -99,7 +99,7 @@ static int			variables(t_ssl *ssl, unsigned char *line, size_t length)
 	if (!(ssl->padded_message = malloc(ssl->len_bit + 64)))
 		return (-1);
 	ft_bzero(ssl->padded_message, ssl->len_bit + 64);
-	ft_strncpy2((char *)ssl->padded_message, (const char *)line, length);
+	entirecpy((char *)ssl->padded_message, (const char *)line, length);
 	*(uint32_t *)(ssl->padded_message + length) = 0x80;
 	*(uint32_t *)(ssl->padded_message + ssl->len_bit) = (uint32_t)(8 * length);
 	ssl->chunk = 0;

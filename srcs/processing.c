@@ -58,6 +58,7 @@ static void	read_file(t_ssl *ssl, char **args, int index)
 {
 	size_t	length;
 	int		err;
+
 	length = 0;
 	ssl->file_name = ft_strdup(args[index]);
 	if ((err = file_exists(ssl->file_name)) > 0)
@@ -91,7 +92,7 @@ static void	read_string(t_ssl *ssl, int argc, char **args)
 			send_line_to_hash(ssl, ft_strlen(ssl->line), args[1]);
 			ft_strdel(&ssl->line);
 		}
-		else if ((i + 1) == argc && ft_strcmp(args[i], "-s") == 0 && 
+		else if ((i + 1) == argc && ft_strcmp(args[i], "-s") == 0 &&
 				!ssl->file_index)
 			string_error(args[1]);
 	}
@@ -113,7 +114,8 @@ void		processing(t_ssl *ssl, int argc, char **args)
 		ft_strdel(&line);
 	}
 	if (ssl->flags.s)
-		ssl->string_index ? read_string(ssl, argc, args) : string_error(args[1]);
+		ssl->string_index ? read_string(ssl, argc, args) :
+							string_error(args[1]);
 	if (ssl->file_index)
 	{
 		ssl->origin = FILES;

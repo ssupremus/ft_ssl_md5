@@ -12,7 +12,7 @@
 
 #include "../includes/ft_ssl.h"
 
-static void print_block64(uint64_t block)
+static void	print_block64(uint64_t block)
 {
 	int		i;
 	char	*buffer;

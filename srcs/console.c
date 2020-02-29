@@ -12,7 +12,7 @@
 
 #include "../includes/ft_ssl.h"
 
-static int	count_words(char *s)
+static int		count_words(char *s)
 {
 	size_t	i;
 	size_t	words;
@@ -33,31 +33,31 @@ static int	count_words(char *s)
 	return (words);
 }
 
-void    clean_input(t_ssl *ssl, int argc)
+void			clean_input(t_ssl *ssl, int argc)
 {
-    int i;
+	int i;
 
-    i = -1;
-    if (ssl->stdin_args != NULL)
-    {
-        while (++i < argc)
-            ft_strdel(&ssl->stdin_args[i]);
-        free(ssl->stdin_args);
-        ssl->stdin_args = NULL;
-    }
-    if (ssl->stdin_buf != NULL)
-        ft_strdel(&ssl->stdin_buf);
+	i = -1;
+	if (ssl->stdin_args != NULL)
+	{
+		while (++i < argc)
+			ft_strdel(&ssl->stdin_args[i]);
+		free(ssl->stdin_args);
+		ssl->stdin_args = NULL;
+	}
+	if (ssl->stdin_buf != NULL)
+		ft_strdel(&ssl->stdin_buf);
 }
 
-int		hash_recognized(char *hash)
+int				hash_recognized(char *hash)
 {
-    if (ft_strcmp(hash, "md5") == 0 ||
+	if (ft_strcmp(hash, "md5") == 0 ||
 		ft_strcmp(hash, "sha224") == 0 ||
 		ft_strcmp(hash, "sha256") == 0 ||
 		ft_strcmp(hash, "sha384") == 0 ||
 		ft_strcmp(hash, "sha512") == 0)
-        return (1);
-    return (0);
+		return (1);
+	return (0);
 }
 
 static int		console_options(t_ssl *ssl)
@@ -71,7 +71,7 @@ static int		console_options(t_ssl *ssl)
 	else if (ft_strcmp(ssl->stdin_args[1], "exit") == 0)
 	{
 		clean_input(ssl, ssl->words);
- 		return (-1);
+		return (-1);
 	}
 	else if (ft_strcmp(ssl->stdin_args[1], "help") == 0)
 	{
@@ -86,7 +86,7 @@ static int		console_options(t_ssl *ssl)
 	return (1);
 }
 
-void	console(t_ssl *ssl)
+void			console(t_ssl *ssl)
 {
 	ft_putendl("Type 'exit' to quit or 'help' for help");
 	while (1)
@@ -103,7 +103,7 @@ void	console(t_ssl *ssl)
 				break ;
 		}
 		ft_strdel(&ssl->stdin_line);
-    }
-    if (ssl->stdin_line)
-        ft_strdel(&ssl->stdin_line);
+	}
+	if (ssl->stdin_line)
+		ft_strdel(&ssl->stdin_line);
 }

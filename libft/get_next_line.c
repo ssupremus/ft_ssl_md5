@@ -90,10 +90,7 @@ int				get_next_line(const int fd, char **line)
 		*line = ft_strsub(str, 0, r);
 		if (*(str + r) == 10)
 			r++;
-		// temp = ft_strsub(str, r, (ft_strlen(str) - r));
 		ft_strdel(&str);
-		// str = ft_strdup(temp);
-		// ft_strdel(&temp);
 		return (1);
 	}
 	return (0);

@@ -12,7 +12,7 @@
 
 #include "../includes/ft_ssl.h"
 
-void    get_uint64_be(uint64_t *n, const unsigned char *b, int i)
+void	get_uint64_be(uint64_t *n, const unsigned char *b, int i)
 {
 	*n = ((uint64_t)(b)[(i)] << 56) | \
 		((uint64_t)(b)[(i) + 1] << 48) | \
@@ -24,7 +24,7 @@ void    get_uint64_be(uint64_t *n, const unsigned char *b, int i)
 		((uint64_t)(b)[(i) + 7]);
 }
 
-void     put_uint64_be(uint64_t n, unsigned char *b, int i)
+void	put_uint64_be(uint64_t n, unsigned char *b, int i)
 {
 	(b)[(i)] = (unsigned char)((n) >> 56);
 	(b)[(i) + 1] = (unsigned char)((n) >> 48);

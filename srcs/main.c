@@ -12,7 +12,7 @@
 
 #include "../includes/ft_ssl.h"
 
-void	initialize(t_ssl *ssl)
+void		initialize(t_ssl *ssl)
 {
 	ssl->flags.p = 0;
 	ssl->flags.q = 0;

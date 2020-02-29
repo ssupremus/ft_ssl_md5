@@ -14,10 +14,10 @@
 
 size_t	file_length(char *name)
 {
-	int fd;
-	int ret;
-	int buf[2];
-	size_t length;
+	int		fd;
+	int		ret;
+	int		buf[2];
+	size_t	length;
 
 	fd = open(name, O_RDONLY);
 	buf[1] = 0;
@@ -30,7 +30,7 @@ size_t	file_length(char *name)
 	return (length);
 }
 
-int	file_exists(char *name)
+int		file_exists(char *name)
 {
 	int		fd;
 	char	*buf[2];
@@ -44,20 +44,20 @@ int	file_exists(char *name)
 			return (-3);
 		return (-1);
 	}
-	ret = read(fd, buf, 1); 
+	ret = read(fd, buf, 1);
 	close(fd);
 	if (ret < 0)
 		return (-2);
 	return (fd);
 }
 
-char		*reading(char *name, size_t length)
+char	*reading(char *name, size_t length)
 {
-	int fd;
-	int ret;
-	int buf[2];
-	char *line;
-	int i;
+	int		fd;
+	int		ret;
+	int		buf[2];
+	char	*line;
+	int		i;
 
 	fd = open(name, O_RDONLY);
 	if (fd < 0)
