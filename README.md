@@ -18,3 +18,11 @@ or if you want to run ft_ssl in console mode:
 ## Available Message Digest commands:
 * ```md5```
 * ```sha224```
+* ```sha256```
+* ```sha384```
+* ```sha512```
+## Flags:
+* ```-p``` echo STDIN to STDOUT and append the checksum to STDOUT
+* ```-q``` quiet mode
+* ```-r``` reverse the format of the output
+* ```-s``` print the sum of the given string
