@@ -8,12 +8,13 @@ cd ft_ssl_md5
 make
 ```
 # Usage
-'
+```
 ./ft_ssl [message digest command] [flags]
-'
+```
 or if you want to run ft_ssl in console mode:
-'
+```
 ./ft_ssl
-'
+```
 ## Available Message Digest commands:
-* 'md5'
+* ```md5```
+* ```sha224```
