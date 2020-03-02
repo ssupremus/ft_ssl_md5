@@ -108,7 +108,7 @@ void		processing(t_ssl *ssl, int argc, char **args)
 	{
 		ssl->origin = STDIN;
 		get_next_line_div(STDIN, &line, 0);
-		ssl->line = ft_strdup(line);
+		ssl->line = line != NULL ? ft_strjoin(line, "\n") : ft_strdup("\n");
 		send_line_to_hash(ssl, ft_strlen(ssl->line), args[1]);
 		ft_strdel(&ssl->line);
 		ft_strdel(&line);

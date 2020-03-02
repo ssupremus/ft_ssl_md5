@@ -97,10 +97,10 @@ int				get_next_line_div(const int fd, char **line, char div)
 		return (-1);
 	if (*(str + r) != 0)
 	{
-		while (*(str + r) != div && *(str + r) != 0)
+		while (*(str + r) != 10 && *(str + r) != 0)
 			r++;
 		*line = ft_strsub(str, 0, r);
-		if (div != 0 && *(str + r) == div)
+		if (*(str + r) == 10)
 			r++;
 		temp = ft_strsub(str, r, (ft_strlen(str) - r));
 		ft_strdel(&str);

@@ -66,8 +66,16 @@ static int		console_options(t_ssl *ssl)
 	ssl->words = count_words(ssl->stdin_buf);
 	ssl->stdin_args = ft_strsplit(ssl->stdin_buf, ' ');
 	ft_strdel(&ssl->stdin_buf);
-	if (hash_recognized(ssl->stdin_args[1]) > 0)
+	if (ssl->words == 1)
+	{
+
+	}
+	else if (hash_recognized(ssl->stdin_args[1]) > 0)
+	{
 		processing(ssl, ssl->words, ssl->stdin_args);
+		clean_input(ssl, ssl->words);
+		return (1);
+	}
 	else if (ft_strcmp(ssl->stdin_args[1], "exit") == 0)
 	{
 		clean_input(ssl, ssl->words);
