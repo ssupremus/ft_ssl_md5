@@ -9,7 +9,7 @@ make
 ```
 # Usage
 ```
-./ft_ssl [message digest command] [flags]
+./ft_ssl [message digest command] [flags] [strings or files]
 ```
 or if you want to run ft_ssl in console mode:
 ```
